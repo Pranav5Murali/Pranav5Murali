@@ -1,0 +1,25 @@
+name: Run Python Script on Ubuntu VM
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  ubuntu-ssh:
+    name: Execute Python Script on Ubuntu VM
+    runs-on: self-hosted
+    environment: ubuntu1
+    steps:
+      # Step 1: Checkout the code from your repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Install Node.js dependencies
+      - name: Install SSH dependencies
+        run: npm install ssh2
+
+      # Step 3: Run the Node.js script to copy and execute the Python script on the remote VM
+      - name: Run Node.js SSH script
+        run: node ./scripts/deploy.js
