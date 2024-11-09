@@ -8,20 +8,30 @@ on:
 
 jobs:
   ubuntu-ssh:
+    name: Windows Machine to Ubuntu VM
     runs-on: self-hosted
     environment: ubuntu1  # Use the environment where your secret is stored
     steps:
-      - name: Connect to Ubuntu VM using Plink and create a test file
+      - name: Step 1: Running on Windows Machine
+        run: |
+          echo "Executing on the Windows self-hosted runner."
+      
+      - name: Step 2: Connect to Ubuntu VM and Create Test File
         env:
           SSH_USER: pranav
           SSH_PASSWORD: ${{ secrets.UBUNTU1 }}
           SSH_HOST: 192.168.1.100
-        shell: pwsh
         run: |
-          # Download Plink if not already installed
-          if (-Not (Get-Command plink -ErrorAction SilentlyContinue)) {
-              Invoke-WebRequest -Uri "https://the.earth.li/~sgtatham/putty/latest/w64/plink.exe" -OutFile "C:\Windows\System32\plink.exe"
-          }
-          # Use Plink to connect to the Ubuntu VM and create a test file
+          echo "Establishing SSH connection to Ubuntu VM..."
           echo y | plink -ssh $env:SSH_USER@$env:SSH_HOST -pw $env:SSH_PASSWORD "echo 'This is a test file created from GitHub Actions' > /home/pranav/git_target/test_file.txt"
+          echo "Test file created at /home/pranav/git_target/test_file.txt"
+      
+      - name: Step 3: List Contents of /home/pranav/git_target
+        env:
+          SSH_USER: pranav
+          SSH_PASSWORD: ${{ secrets.UBUNTU1 }}
+          SSH_HOST: 192.168.1.100
+        run: |
+          echo "Listing contents of /home/pranav/git_target directory on Ubuntu VM..."
           echo y | plink -ssh $env:SSH_USER@$env:SSH_HOST -pw $env:SSH_PASSWORD "ls -la /home/pranav/git_target"
+          echo "Directory contents listed successfully."
