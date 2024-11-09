@@ -1,4 +1,4 @@
-name: Connect to Ubuntu VM using Password
+name: Connect to Ubuntu VM using Password with Plink
 
 on:
   push:
@@ -22,13 +22,17 @@ jobs:
           } else {
               Write-Host "✅ SSH_PASSWORD is set."
               Write-Host "Password length: $($env:SSH_PASSWORD.Length)"
-          }
-
-      - name: Connect to Ubuntu VM using PowerShell and SSH
+      
+      - name: Connect to Ubuntu VM using Plink
         env:
           SSH_USER: pranav
           SSH_PASSWORD: ${{ secrets.UBUNTU1 }}
           SSH_HOST: 192.168.1.100
         run: |
-          # Use echo to pass the password and pipe it to the SSH command
-          echo "$env:SSH_PASSWORD" | ssh -o StrictHostKeyChecking=no $env:SSH_USER@$env:SSH_HOST "ls -la /home/pranav/"
+          # Download Plink if not already installed
+          if (-Not (Get-Command plink -ErrorAction SilentlyContinue)) {
+            Invoke-WebRequest -Uri "https://the.earth.li/~sgtatham/putty/latest/w64/plink.exe" -OutFile "C:\Windows\System32\plink.exe"
+          }
+          
+          # Use Plink to connect to the Ubuntu VM
+          echo y | plink -ssh $env:SSH_USER@$env:SSH_HOST -pw $env:SSH_PASSWORD "ls -la /home/pranav/"
