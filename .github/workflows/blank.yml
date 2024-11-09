@@ -10,9 +10,6 @@ jobs:
   ubuntu-ssh:
     runs-on: self-hosted  # This will run on your self-hosted Windows runner
     steps:
-      - name: Install SSH Client on Windows
-        run: choco install openssh
-
       - name: Connect to Ubuntu VM and show directory contents
         env:
           SSH_USER: pranav
@@ -20,7 +17,7 @@ jobs:
           SSH_HOST: 192.168.1.100
         run: |
           echo "Connecting to Ubuntu VM..."
-          echo "$SSH_PASSWORD" | sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "echo 'Logged in successfully!'"
-          echo "$SSH_PASSWORD" | sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "ls -la /home/pranav/"
-          echo "$SSH_PASSWORD" | sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "ifconfig"
-          echo "$SSH_PASSWORD" | sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "whoami"
+          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "echo 'Logged in successfully!'"
+          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "ls -la /home/pranav/"
+          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "ifconfig"
+          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "whoami"
