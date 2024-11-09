@@ -1,0 +1,17 @@
+name: Show Directory Contents
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  show-directory:
+    runs-on: self-hosted
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: List contents of /home/pranav/
+        run: ls -la /home/pranav/
