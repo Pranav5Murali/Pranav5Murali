@@ -11,21 +11,7 @@ jobs:
     runs-on: self-hosted
     environment: ubuntu1  # Use the environment where your secret is stored
     steps:
-      - name: Check if environment secret is accessible
-        env:
-          SSH_PASSWORD: ${{ secrets.UBUNTU1 }}
-        shell: pwsh
-        run: |
-          Write-Host "Checking if SSH_PASSWORD is set..."
-          if ("$env:SSH_PASSWORD" -eq "") {
-              Write-Host "❌ SSH_PASSWORD is empty!"
-              exit 1
-          } else {
-              Write-Host "✅ SSH_PASSWORD is set."
-              Write-Host "Password length: $($env:SSH_PASSWORD.Length)"
-          }
-      
-      - name: Connect to Ubuntu VM using Plink
+      - name: Connect to Ubuntu VM using Plink and create a test file
         env:
           SSH_USER: pranav
           SSH_PASSWORD: ${{ secrets.UBUNTU1 }}
@@ -36,5 +22,6 @@ jobs:
           if (-Not (Get-Command plink -ErrorAction SilentlyContinue)) {
               Invoke-WebRequest -Uri "https://the.earth.li/~sgtatham/putty/latest/w64/plink.exe" -OutFile "C:\Windows\System32\plink.exe"
           }
-          # Use Plink to connect to the Ubuntu VM
+          # Use Plink to connect to the Ubuntu VM and create a test file
+          echo y | plink -ssh $env:SSH_USER@$env:SSH_HOST -pw $env:SSH_PASSWORD "echo 'This is a test file created from GitHub Actions' > /home/pranav/test_file.txt"
           echo y | plink -ssh $env:SSH_USER@$env:SSH_HOST -pw $env:SSH_PASSWORD "ls -la /home/pranav/"
