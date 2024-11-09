@@ -22,15 +22,12 @@ jobs:
           } else {
             Write-Host "✅ SSH_PASSWORD is set."
             Write-Host "Password length: $($env:SSH_PASSWORD.Length)"
-          }
-
-      - name: Connect to Ubuntu VM using SSH
+      
+      - name: Connect to Ubuntu VM using PowerShell and SSH
         env:
           SSH_USER: pranav
           SSH_PASSWORD: ${{ secrets.UBUNTU1 }}
           SSH_HOST: 192.168.1.100
         run: |
-          # Convert the password to a secure string
-          $password = ConvertTo-SecureString $env:SSH_PASSWORD -AsPlainText -Force
-          $credential = New-Object System.Management.Automation.PSCredential("$env:SSH_USER", $password)
-          ssh -o StrictHostKeyChecking=no $env:SSH_USER@$env:SSH_HOST "echo 'Logged in successfully!'"
+          # Use echo to pass the password and pipe it to the SSH command
+          echo "$env:SSH_PASSWORD" | ssh -o StrictHostKeyChecking=no $env:SSH_USER@$env:SSH_HOST "ls -la /home/pranav/"
