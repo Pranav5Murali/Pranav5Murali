@@ -1,5 +1,5 @@
-          
 name: Connect to Ubuntu VM using Password with Plink
+
 on:
   push:
     branches:
@@ -7,10 +7,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  name: Windows Machine to Ubuntu VM
   ubuntu-ssh:
+    name: Windows Machine to Ubuntu VM
     runs-on: self-hosted
-
     environment: ubuntu1  # Use the environment where your secret is stored
     steps:
       - run: |
