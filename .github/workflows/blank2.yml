@@ -10,7 +10,7 @@ jobs:
   ubuntu-ssh:
     name: Windows Machine to Ubuntu VM
     runs-on: self-hosted
-    environment: ubuntu1  # Use the environment where your secret is stored
+    environment: ubuntu1  
     steps:
       - name: "Step 1: Running on Windows Machine"
         run: |
@@ -25,13 +25,5 @@ jobs:
           echo "Establishing SSH connection to Ubuntu VM..."
           echo y | plink -ssh "$env:SSH_USER@$env:SSH_HOST" -pw "$env:SSH_PASSWORD" "echo 'This is a test file created from GitHub Actions' > /home/pranav/git_target/test_file.txt"
           echo "Test file created at /home/pranav/git_target/test_file.txt"
-      
-      - name: "Step 3: List Contents of /home/pranav/git_target"
-        env:
-          SSH_USER: pranav
-          SSH_PASSWORD: ${{ secrets.UBUNTU1 }}
-          SSH_HOST: 192.168.1.100
-        run: |
-          echo "Listing contents of /home/pranav/git_target directory on Ubuntu VM..."
-          echo y | plink -ssh "$env:SSH_USER@$env:SSH_HOST" -pw "$env:SSH_PASSWORD" "ls -la /home/pranav/git_target"
-          echo "Directory contents listed successfully."
+          cd /home/pranav/git_target/
+          ls -ltr
