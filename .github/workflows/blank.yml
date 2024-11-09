@@ -23,5 +23,5 @@ jobs:
               Invoke-WebRequest -Uri "https://the.earth.li/~sgtatham/putty/latest/w64/plink.exe" -OutFile "C:\Windows\System32\plink.exe"
           }
           # Use Plink to connect to the Ubuntu VM and create a test file
-          echo y | plink -ssh $env:SSH_USER@$env:SSH_HOST -pw $env:SSH_PASSWORD "echo 'This is a test file created from GitHub Actions' > /home/pranav/test_file.txt"
-          echo y | plink -ssh $env:SSH_USER@$env:SSH_HOST -pw $env:SSH_PASSWORD "ls -la /home/pranav/"
+          echo y | plink -ssh $env:SSH_USER@$env:SSH_HOST -pw $env:SSH_PASSWORD "echo 'This is a test file created from GitHub Actions' > /home/pranav/git_target/test_file.txt"
+          echo y | plink -ssh $env:SSH_USER@$env:SSH_HOST -pw $env:SSH_PASSWORD "ls -la /home/pranav/git_target"
