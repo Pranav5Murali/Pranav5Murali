@@ -8,18 +8,22 @@ const config = {
   host: '192.168.1.100',
   port: 22,
   username: 'pranav',
-  password: process.env.UBUNTU1, // Accessing GitHub secret as environment variable
+  password: process.env.UBUNTU1, // Access GitHub secret as environment variable
 };
 
-const localFilePath = './view_files.py';
+const localFilePath = path.resolve(__dirname, '../view_files.py');
 const remoteFilePath = '/home/pranav/git_target/view_files.py';
 
 conn.on('ready', () => {
   console.log('SSH connection established.');
 
-  // Step 1: Copy the Python file to the remote server
+  // Step 1: Copy the Python script to the remote server
   conn.sftp((err, sftp) => {
-    if (err) throw err;
+    if (err) {
+      console.error(`SFTP Error: ${err.message}`);
+      conn.end();
+      return;
+    }
 
     const readStream = fs.createReadStream(localFilePath);
     const writeStream = sftp.createWriteStream(remoteFilePath);
@@ -29,7 +33,11 @@ conn.on('ready', () => {
 
       // Step 2: Execute the Python script on the remote server
       conn.exec(`python3 ${remoteFilePath}`, (err, stream) => {
-        if (err) throw err;
+        if (err) {
+          console.error(`Execution Error: ${err.message}`);
+          conn.end();
+          return;
+        }
 
         stream
           .on('close', (code) => {
