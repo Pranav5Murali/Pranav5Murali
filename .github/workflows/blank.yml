@@ -1,4 +1,4 @@
-name: Run Python Script on Ubuntu VM
+name: Run latest Python Script on Ubuntu VM
 
 on:
   push:
