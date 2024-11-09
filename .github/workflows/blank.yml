@@ -10,16 +10,27 @@ jobs:
   ubuntu-ssh:
     runs-on: self-hosted  # Your Windows self-hosted runner
     steps:
-      - name: Connect to Ubuntu VM using SSH with password
+      - name: Check if SSH password is set
+        env:
+          SSH_PASSWORD: ${{ secrets.UBUNTU1 }}
+        run: |
+          if (!$env:SSH_PASSWORD) {
+            Write-Host "Password is missing!"
+            exit 1
+          } else {
+            Write-Host "Password is set correctly."
+          }
+      
+      - name: Connect to Ubuntu VM using SSH
         env:
           SSH_USER: pranav
           SSH_PASSWORD: ${{ secrets.UBUNTU1 }}
           SSH_HOST: 192.168.1.100
         run: |
-          # Create a PowerShell script to pass the password
+          # Convert the password to a secure string
           $password = ConvertTo-SecureString $env:SSH_PASSWORD -AsPlainText -Force
           $credential = New-Object System.Management.Automation.PSCredential("$env:SSH_USER", $password)
-          
+
           # Use the ssh command to connect to the Ubuntu VM
           ssh -o StrictHostKeyChecking=no $env:SSH_USER@$env:SSH_HOST "echo 'Logged in successfully!'"
           ssh -o StrictHostKeyChecking=no $env:SSH_USER@$env:SSH_HOST "ls -la /home/pranav/"
