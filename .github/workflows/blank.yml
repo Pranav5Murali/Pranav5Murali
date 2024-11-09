@@ -9,18 +9,21 @@ on:
 jobs:
   ubuntu-ssh:
     runs-on: self-hosted  # Your Windows self-hosted runner
+    environment: Ubuntu  # Use the environment where your secret is stored
     steps:
-      - name: Check if SSH password is set
+      - name: Check if environment secret is accessible
         env:
           SSH_PASSWORD: ${{ secrets.UBUNTU1 }}
         run: |
-          if (!$env:SSH_PASSWORD) {
-            Write-Host "Password is missing!"
+          Write-Host "Checking if SSH_PASSWORD is set..."
+          if ("$env:SSH_PASSWORD" -eq "") {
+            Write-Host "❌ SSH_PASSWORD is empty!"
             exit 1
           } else {
-            Write-Host "Password is set correctly."
+            Write-Host "✅ SSH_PASSWORD is set."
+            Write-Host "Password length: $($env:SSH_PASSWORD.Length)"
           }
-      
+
       - name: Connect to Ubuntu VM using SSH
         env:
           SSH_USER: pranav
@@ -30,9 +33,4 @@ jobs:
           # Convert the password to a secure string
           $password = ConvertTo-SecureString $env:SSH_PASSWORD -AsPlainText -Force
           $credential = New-Object System.Management.Automation.PSCredential("$env:SSH_USER", $password)
-
-          # Use the ssh command to connect to the Ubuntu VM
           ssh -o StrictHostKeyChecking=no $env:SSH_USER@$env:SSH_HOST "echo 'Logged in successfully!'"
-          ssh -o StrictHostKeyChecking=no $env:SSH_USER@$env:SSH_HOST "ls -la /home/pranav/"
-          ssh -o StrictHostKeyChecking=no $env:SSH_USER@$env:SSH_HOST "ifconfig"
-          ssh -o StrictHostKeyChecking=no $env:SSH_USER@$env:SSH_HOST "whoami"
