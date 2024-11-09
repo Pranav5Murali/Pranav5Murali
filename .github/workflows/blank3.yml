@@ -1,0 +1,33 @@
+name: Run Python Script on Ubuntu VM
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  ubuntu-ssh:
+    name: Execute Python Script on Ubuntu VM
+    runs-on: self-hosted
+    environment: ubuntu1
+    steps:
+      # Step 1: Checkout the code from your repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      # Step 2: Establish SSH connection and run the Python script
+      - name: Execute Python Script via SSH
+        run: |
+          echo "Connecting to Ubuntu VM and executing the Python script..."
+          # Copy the Python script to the Ubuntu VM
+          echo y | plink -ssh "pranav@192.168.1.100" -pw "${{ secrets.UBUNTU1 }}" "mkdir -p /home/pranav/git_target"
+          pscp -pw "${{ secrets.UBUNTU1 }}" ./your_script.py "pranav@192.168.1.100:/home/pranav/git_target/"
+
+          # Execute the Python script on the remote VM
+          echo y | plink -ssh "pranav@192.168.1.100" -pw "${{ secrets.UBUNTU1 }}" "python3 /home/pranav/git_target/your_script.py"
+
+      - name: Display .log files on Ubuntu VM
+        run: |
+          echo "Listing the .log files in the directory on the Ubuntu VM..."
+          echo y | plink -ssh "pranav@192.168.1.100" -pw "${{ secrets.UBUNTU1 }}" "ls -la /home/pranav/documents"
