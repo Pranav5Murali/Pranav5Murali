@@ -1,4 +1,4 @@
-name: Connect to Ubuntu VM from Windows Runner
+name: Connect to Ubuntu VM using Password
 
 on:
   push:
@@ -8,16 +8,20 @@ on:
 
 jobs:
   ubuntu-ssh:
-    runs-on: self-hosted  # This will run on your self-hosted Windows runner
+    runs-on: self-hosted  # Your Windows self-hosted runner
     steps:
-      - name: Connect to Ubuntu VM and show directory contents
+      - name: Connect to Ubuntu VM using SSH with password
         env:
           SSH_USER: pranav
           SSH_PASSWORD: ${{ secrets.UBUNTU1 }}
           SSH_HOST: 192.168.1.100
         run: |
-          echo "Connecting to Ubuntu VM..."
-          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "echo 'Logged in successfully!'"
-          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "ls -la /home/pranav/"
-          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "ifconfig"
-          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "whoami"
+          # Create a PowerShell script to pass the password
+          $password = ConvertTo-SecureString $env:SSH_PASSWORD -AsPlainText -Force
+          $credential = New-Object System.Management.Automation.PSCredential("$env:SSH_USER", $password)
+          
+          # Use the ssh command to connect to the Ubuntu VM
+          ssh -o StrictHostKeyChecking=no $env:SSH_USER@$env:SSH_HOST "echo 'Logged in successfully!'"
+          ssh -o StrictHostKeyChecking=no $env:SSH_USER@$env:SSH_HOST "ls -la /home/pranav/"
+          ssh -o StrictHostKeyChecking=no $env:SSH_USER@$env:SSH_HOST "ifconfig"
+          ssh -o StrictHostKeyChecking=no $env:SSH_USER@$env:SSH_HOST "whoami"
