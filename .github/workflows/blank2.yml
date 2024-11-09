@@ -1,4 +1,4 @@
-name: Connect to Ubuntu VM using Password with Plin
+name: Connect to Ubuntu VM using Password with Plink
 
 on:
   push:
