@@ -12,24 +12,12 @@ jobs:
     runs-on: self-hosted
     environment: ubuntu1
     steps:
-      # Step 1: Checkout the code from your repository
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      # Step 2: Verify that the file exists after checkout
-      - name: List files in the working directory
+      - name: Clone Repository and Execute Script via SSH
         run: |
-          echo "Checking if view_files.py is present:"
-          ls -la
-
-      # Step 3: Copy the Python script to the Ubuntu VM
-      - name: Copy Python Script to Ubuntu VM
-        run: |
-          echo "Copying the Python script to Ubuntu VM..."
-          pscp -pw "${{ secrets.UBUNTU1 }}" ./view_files.py "pranav@192.168.1.100:/home/pranav/git_target/"
-      
-      # Step 4: Execute the Python script on the Ubuntu VM
-      - name: Execute Python Script via SSH
-        run: |
-          echo "Executing Python script on Ubuntu VM..."
-          echo y | plink -ssh "pranav@192.168.1.100" -pw "${{ secrets.UBUNTU1 }}" "python3 /home/pranav/git_target/view_files.py"
+          echo "Connecting to Ubuntu VM and cloning the repository..."
+          echo y | plink -ssh "pranav@192.168.1.100" -pw "${{ secrets.UBUNTU1 }}" \
+          "cd /home/pranav/git_target && \
+          rm -rf intro && \
+          git clone https://github.com/Pranav5Murali/intro.git && \
+          cd intro && \
+          python3 view_files.py"
