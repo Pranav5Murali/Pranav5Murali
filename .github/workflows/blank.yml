@@ -1,4 +1,4 @@
-name: Show Directory Contents
+name: Connect to Ubuntu VM from Windows Runner
 
 on:
   push:
@@ -7,11 +7,20 @@ on:
   workflow_dispatch:
 
 jobs:
-  show-directory:
-    runs-on: self-hosted
+  ubuntu-ssh:
+    runs-on: self-hosted  # This will run on your self-hosted Windows runner
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v3
+      - name: Install SSH Client on Windows
+        run: choco install openssh
 
-      - name: List contents of /home/pranav/
-        run: ls -la /home/pranav/
+      - name: Connect to Ubuntu VM and show directory contents
+        env:
+          SSH_USER: pranav
+          SSH_PASSWORD: ${{ secrets.UBUNTU1 }}
+          SSH_HOST: 192.168.1.100
+        run: |
+          echo "Connecting to Ubuntu VM..."
+          echo "$SSH_PASSWORD" | sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "echo 'Logged in successfully!'"
+          echo "$SSH_PASSWORD" | sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "ls -la /home/pranav/"
+          echo "$SSH_PASSWORD" | sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "ifconfig"
+          echo "$SSH_PASSWORD" | sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "whoami"
