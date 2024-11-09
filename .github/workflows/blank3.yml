@@ -16,11 +16,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Verify that the file exists after checkout
-      - name: List files in the working directory
-        run: |
-          echo "Checking if view_files.py is present:"
-          ls -la
 
       # Step 3: Copy the Python script to the Ubuntu VM
       - name: Copy Python Script to Ubuntu VM
