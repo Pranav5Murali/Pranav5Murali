@@ -17,12 +17,13 @@ jobs:
         run: |
           Write-Host "Checking if SSH_PASSWORD is set..."
           if ("$env:SSH_PASSWORD" -eq "") {
-            Write-Host "❌ SSH_PASSWORD is empty!"
-            exit 1
+              Write-Host "❌ SSH_PASSWORD is empty!"
+              exit 1
           } else {
-            Write-Host "✅ SSH_PASSWORD is set."
-            Write-Host "Password length: $($env:SSH_PASSWORD.Length)"
-      
+              Write-Host "✅ SSH_PASSWORD is set."
+              Write-Host "Password length: $($env:SSH_PASSWORD.Length)"
+          }
+
       - name: Connect to Ubuntu VM using PowerShell and SSH
         env:
           SSH_USER: pranav
