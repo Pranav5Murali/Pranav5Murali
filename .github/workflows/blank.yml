@@ -9,7 +9,7 @@ on:
 jobs:
   ubuntu-ssh:
     runs-on: self-hosted  # Your Windows self-hosted runner
-    environment: Ubuntu  # Use the environment where your secret is stored
+    environment: ubuntu1  # Use the environment where your secret is stored
     steps:
       - name: Check if environment secret is accessible
         env:
