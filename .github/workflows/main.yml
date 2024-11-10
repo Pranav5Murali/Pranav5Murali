@@ -1,4 +1,4 @@
-name: Test putty
+name: Test plink
 
 on:
   workflow_dispatch:
@@ -9,14 +9,14 @@ jobs:
     name: Connect to Ubuntu VM from Windows Runner
 
     steps:
-    # Checkout the code repository
+    # Step 1: Checkout the code repository
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    # Connect to Ubuntu VM via SSH using the stored secret
-    - name: Connect to Ubuntu VM via SSH
+    # Step 2: Connect to Ubuntu VM via SSH using plink
+    - name: Connect to Ubuntu VM via plink
       run: |
         echo "Connecting to Ubuntu VM..."
-        putty -ssh pranav@192.168.1.100 -pw ${{ secrets.UBUNTU1 }} -m commands.txt
+        "C:\Program Files\PuTTY\plink.exe" -ssh pranav@192.168.1.100 -pw "${{ secrets.UBUNTU1 }}" -m commands.txt
       env:
         UBUNTU_PASSWORD: ${{ secrets.UBUNTU1 }}
