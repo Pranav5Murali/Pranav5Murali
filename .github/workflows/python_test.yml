@@ -12,20 +12,6 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-
-    # Step to debug the secret (as in Part 1)
-    - name: Debug secret in PowerShell
-      shell: powershell
-      env:
-        UBUNTU1: ${{ secrets.UBUNTU1 }}
-      run: |
-        Write-Host "Checking if UBUNTU1 secret is set..."
-        if ($Env:UBUNTU1 -eq $null -or $Env:UBUNTU1 -eq "") {
-          Write-Host "Secret UBUNTU1 is not set or is empty"
-          exit 1
-        } else {
-          Write-Host "Secret UBUNTU1 is set"
-          Write-Host "Length of password: $($Env:UBUNTU1.Length)"
       
     # Step to connect to the Ubuntu VM using plink and execute the Python script
     - name: Run Python Script on Ubuntu VM
