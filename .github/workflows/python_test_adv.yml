@@ -12,13 +12,18 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Print current directory
+    - name: Print current directory and contents
       shell: cmd
       run: |
         echo "Current directory:"
         cd
-        echo "Contents of current directory:"
         dir
+
+    - name: Set permissions on the Python script
+      shell: cmd
+      run: |
+        echo "Setting permissions on execute_remote.py..."
+        icacls execute_remote.py /grant Everyone:F
 
     - name: Run Python script using cmd
       shell: cmd
@@ -27,5 +32,4 @@ jobs:
       run: |
         echo "Running Python script using cmd..."
         cd "${{ github.workspace }}"
-        dir
         "C:\Users\Pranav\AppData\Local\Programs\Python\Python38\python.exe" execute_remote.py
