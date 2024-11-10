@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted  # Windows self-hosted runner
+    runs-on: self-hosted  # Using your Windows self-hosted runner
 
     steps:
       # Step 1: Checkout the code from your repository
@@ -27,11 +27,10 @@ jobs:
           echo "HOST=${HOST}" >> $env:GITHUB_ENV
           echo "PASSWORD=${PASSWORD}" >> $env:GITHUB_ENV
           echo "TARGET_DIR=/home/pranav/git_target" >> $env:GITHUB_ENV
-          echo "LOCAL_SCRIPT=./view_files.py" >> $env:GITHUB_ENV
+          echo "LOCAL_SCRIPT=./intro/view_files.py" >> $env:GITHUB_ENV
           echo "REMOTE_SCRIPT=/home/pranav/git_target/view_files.py" >> $env:GITHUB_ENV
 
-
-      # Step 4: Execute the Python deployment script
-      - name: Run Deployment Script
+      # Step 3: Run the Python deployment script using python3
+      - name: Execute Deployment Script
         shell: powershell
-        run: python deploy_script.py
+        run: python3 intro/deploy_script.py
