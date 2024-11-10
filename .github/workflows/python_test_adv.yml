@@ -19,7 +19,5 @@ jobs:
       run: |
         echo "Running Python script using Git Bash..."
         cd "${{ github.workspace }}"
-        "C:\Program Files\Git\bin\bash.exe" -c '/c/Users/Pranav/AppData/Local/Programs/Python/Python38/python execute_remote.py'
+        "C:\Program Files\Git\bin\bash.exe" -c '"C:/Users/Pranav/AppData/Local/Programs/Python/Python38/python.exe" execute_remote.py'
 
-
-    
