@@ -1,0 +1,17 @@
+name: Set Environment Variables
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  set-secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Environment Variables
+        run: |
+          echo "USERNAME=pranav" | gh secret set USERNAME
+          echo "HOST=192.168.1.100" | gh secret set HOST
+          echo "PASSWORD=${{ secrets.ubuntu1 }}" | gh secret set PASSWORD
