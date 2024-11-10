@@ -20,7 +20,7 @@ jobs:
         env:
           USERNAME: "pranav"
           HOST: "192.168.1.100"
-          PASSWORD: ${{ secrets.ubuntu1 }}
+          PASSWORD: "${{ secrets.ubuntu1 }}"
           TARGET_DIR: "/home/pranav/git_target"
           LOCAL_SCRIPT: "./view_files.py"
           REMOTE_SCRIPT: "/home/pranav/git_target/view_files.py"
@@ -36,18 +36,19 @@ jobs:
           # Step 1: Ensure the target directory exists on the remote server
           Write-Host "Creating target directory on $host..."
           plink -ssh "${username}@${host}" -pw $password "mkdir -p $targetDir"
-
+          
           # Step 2: Copy the Python script to the remote server
           Write-Host "Copying Python script to remote server..."
-          pscp -pw $password $localScript "${username}@${host}:`${targetDir}/"
-
+          pscp -pw $password $localScript "${username}@${host}:$targetDir/"
+          
           # Step 3: Execute the Python script on the remote server
           Write-Host "Executing Python script on remote server..."
           $executionResult = plink -ssh "${username}@${host}" -pw $password "python3 $remoteScript"
-
-          # Check for errors in script execution
+          
+          # Step 4: Check for errors in script execution
           if ($executionResult -like "*Error*") {
               Write-Error "Error occurred during script execution on the remote server"
               exit 1
           } else {
               Write-Host "Python script executed successfully."
+          }
