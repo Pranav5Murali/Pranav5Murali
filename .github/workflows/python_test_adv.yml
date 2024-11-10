@@ -13,6 +13,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Run Python script
+      shell: powershell
       env:
         UBUNTU1: ${{ secrets.UBUNTU1 }}
-      run: python3 execute_remote.py
+      run: python execute_remote.py
