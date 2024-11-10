@@ -25,11 +25,12 @@ jobs:
           REMOTE_SCRIPT: /home/pranav/scripts/view_files.py
         run: echo "Environment variables set."
 
-      # Step 3: Copy the script to the remote server using `pscp`
+      # Step 3: Copy script to remote server using `pscp`
       - name: Copy script to remote server using pscp
         shell: pwsh
         run: |
-          pscp -pw "$env:PASSWORD" -batch -scp "$env:LOCAL_SCRIPT" "$env:USERNAME@$env:HOST:$env:TARGET_DIR/"
+          $pscpPath = "C:\\path\\to\\pscp.exe"
+          & $pscpPath -pw "$env:PASSWORD" -batch -scp "$env:LOCAL_SCRIPT" "$env:USERNAME@$env:HOST:$env:TARGET_DIR/"
 
       # Step 4: Execute the script on the remote server using `plink`
       - name: Execute script on remote server using plink
