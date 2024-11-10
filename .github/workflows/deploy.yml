@@ -1,4 +1,4 @@
-name: Deploy and Run Python Script
+name: Deploy and Run Python Script on Remote Ubuntu VM
 
 on:
   push:
@@ -9,11 +9,14 @@ on:
 jobs:
   deploy:
     runs-on: self-hosted
+
     steps:
+      # Step 1: Checkout the code from your repository
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Set up Environment Variables from Secrets
+      # Step 2: Set up environment variables from GitHub secrets
+      - name: Set up Environment Variables
         env:
           USERNAME: ${{ secrets.USERNAME }}
           HOST: ${{ secrets.HOST }}
@@ -26,5 +29,7 @@ jobs:
           echo "LOCAL_SCRIPT=./view_files.py" >> $GITHUB_ENV
           echo "REMOTE_SCRIPT=/home/pranav/git_target/view_files.py" >> $GITHUB_ENV
 
-      - name: Execute Deployment Script
+      # Step 3: Execute the Python deploy script
+      - name: Run Deployment Script
+        shell: bash
         run: python3 deploy_script.py
