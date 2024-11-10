@@ -17,7 +17,9 @@ jobs:
       env:
         UBUNTU1: ${{ secrets.UBUNTU1 }}
       run: |
-        "C:\Program Files\Git\bin\bash.exe" -c 'echo "Running Python script using Git Bash..."; /c/Users/Pranav/AppData/Local/Programs/Python/Python38/python execute_remote.py'
+        echo "Running Python script using Git Bash..."
+        cd "${{ github.workspace }}"
+        "C:\Program Files\Git\bin\bash.exe" -c '/c/Users/Pranav/AppData/Local/Programs/Python/Python38/python execute_remote.py'
 
 
     
