@@ -14,32 +14,41 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set environment variables
+      # Step 2: Set environment variables using GitHub secrets
       - name: Set environment variables
+        env:
+          USERNAME: pranav
+          HOST: 192.168.1.100 # Replace this with your actual Ubuntu server IP address
+          PASSWORD: ${{ secrets.UBUNTU1 }}
+          TARGET_DIR: /home/pranav/git_target
+          LOCAL_SCRIPT: intro/view_files.py
+          REMOTE_SCRIPT: /home/pranav/git_target/view_files.py
+
+      # Step 3: Debug output to verify if secrets are set correctly
+      - name: Verify environment variables
         shell: pwsh
         run: |
-          # Manually set the values
-          $env:USERNAME = "pranav"
-          $env:HOST = "192.168.1.100" # Replace this with your actual Ubuntu server IP address
-          $env:PASSWORD = "${{ secrets.UBUNTU1 }}"
-          $env:TARGET_DIR = "/home/pranav/git_target"
-          $env:LOCAL_SCRIPT = "intro/view_files.py"
-          $env:REMOTE_SCRIPT = "/home/pranav/git_target/view_files.py"
-
-          # Debugging output
           echo "USERNAME: $env:USERNAME"
           echo "HOST: $env:HOST"
           echo "TARGET_DIR: $env:TARGET_DIR"
           echo "LOCAL_SCRIPT: $env:LOCAL_SCRIPT"
           echo "REMOTE_SCRIPT: $env:REMOTE_SCRIPT"
+          
+          # Check if the PASSWORD is set
+          if (-Not $env:PASSWORD) {
+            Write-Error "PASSWORD is not set correctly!"
+          } else {
+            echo "PASSWORD is set correctly."
+          }
 
-          if (-Not $env:HOST) { Write-Error "HOST is not set" }
-          if (-Not $env:PASSWORD) { Write-Error "PASSWORD is not set" }
-
-      # Step 3: Copy the Python script to the remote server using `pscp`
+      # Step 4: Copy the Python script to the remote server using `pscp`
       - name: Copy script to remote server using pscp
         shell: pwsh
         run: |
           & "C:\Program Files\PuTTY\pscp.exe" -pw "$env:PASSWORD" -batch -scp "$env:LOCAL_SCRIPT" "$env:USERNAME@$env:HOST:$env:TARGET_DIR/"
 
-      # Step 4: Execute the Python script on the
+      # Step 5: Execute the Python script on the remote Ubuntu server using `plink`
+      - name: Execute script on remote server using plink
+        shell: pwsh
+        run: |
+          & "C:\Program Files\PuTTY\plink.exe" -pw "$env:PASSWORD" -batch "$env:USERNAME@$env:HOST" "/usr/bin/python3 $env:REMOTE_SCRIPT"
