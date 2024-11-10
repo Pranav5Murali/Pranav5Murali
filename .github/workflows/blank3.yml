@@ -32,15 +32,18 @@ jobs:
           $targetDir = $env:TARGET_DIR
           $localScript = $env:LOCAL_SCRIPT
           $remoteScript = $env:REMOTE_SCRIPT
-
+          
+          # Step 1: Ensure the target directory exists on the remote server
+          Write-Host "Creating target directory on $host..."
+          plink -ssh "${username}@${host}" -pw $password "mkdir -p $targetDir"
 
           # Step 2: Copy the Python script to the remote server
-          Write-Host "Step 2: Copying Python script to $host..."
-          pscp -pw $password $localScript "$username@$host:$targetDir/"
+          Write-Host "Copying Python script to remote server..."
+          pscp -pw $password $localScript "${username}@${host}:`${targetDir}/"
 
           # Step 3: Execute the Python script on the remote server
-          Write-Host "Step 3: Executing Python script on $host..."
-          $executionResult = plink -ssh "$username@$host" -pw $password "python3 $remoteScript"
+          Write-Host "Executing Python script on remote server..."
+          $executionResult = plink -ssh "${username}@${host}" -pw $password "python3 $remoteScript"
 
           # Check for errors in script execution
           if ($executionResult -like "*Error*") {
@@ -48,4 +51,3 @@ jobs:
               exit 1
           } else {
               Write-Host "Python script executed successfully."
-          }
