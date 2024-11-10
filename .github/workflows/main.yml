@@ -1,15 +1,15 @@
 name: Test PuTTY
 
-on: [push]
+on: 
+  push:
 
 jobs:
   test-putty:
     runs-on: self-hosted
-    defaults:
-      run:
-        shell: powershell
     steps:
       - name: Print PATH
-        run: echo $env:PATH
+        run: echo %PATH%
+        shell: cmd
       - name: Check PuTTY
-        run: &"C:\Program Files\PuTTY\putty.exe"
+        run: "C:\Program Files\PuTTY\putty.exe"
+        shell: cmd
