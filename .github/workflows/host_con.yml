@@ -1,7 +1,8 @@
-name: Connect to Ubuntu VM using Plink and PSCP
+name: Connect to Ubuntu VM using Plink
 
 on:
   workflow_dispatch:
+    # Manually trigger the workflow
 
 jobs:
   deploy:
@@ -9,36 +10,27 @@ jobs:
     environment: ubuntu1
 
     steps:
-      # Set up environment variables and check them using PowerShell Core
+      # Step 1: Check environment variables using PowerShell Core
       - name: Check environment variables
+        shell: pwsh
         run: |
-          echo "Checking environment variables..."
-          echo "Python Version: $($env:PYTHON_VERSION)"
-          echo "Node Version: $($env:NODE_VERSION)"
-          echo "PowerShell Path: $($env:POWERSHELL_PATH)"
-          echo "Plink Path: $($env:PUTTY_PATH\\plink.exe)"
+          Write-Host "Checking environment variables..."
+          Write-Host "Python Version: $env:PYTHON_VERSION"
+          Write-Host "Node Version: $env:NODE_VERSION"
+          Write-Host "PowerShell Path: $env:POWERSHELL_PATH"
+          Write-Host "Plink Path: $env:PUTTY_PATH\\plink.exe"
           
-          # Check if the PASSWORD is set correctly
+          # Check if PASSWORD is set correctly
           if (-not $env:PASSWORD) {
             Write-Error "ERROR: PASSWORD is not set correctly!"
             exit 1
           } else {
-            echo "PASSWORD is set correctly."
-          }
-        shell: pwsh
+            Write-Host "PASSWORD is set correctly."
 
-      # Test SSH connection using Plink
+      # Step 2: Test SSH connection to Ubuntu VM using Plink
       - name: Test SSH connection using Plink
+        shell: pwsh
         env:
           PASSWORD: ${{ secrets.UBUNTU1 }}
         run: |
           & "$env:PUTTY_PATH\\plink.exe" -ssh -pw $env:PASSWORD -noagent -batch pranav@192.168.1.100 "hostname && whoami"
-        shell: pwsh
-
-      # Transfer a file to the Ubuntu VM using PSCP
-      - name: Transfer file using PSCP
-        env:
-          PASSWORD: ${{ secrets.UBUNTU1 }}
-        run: |
-          & "$env:PUTTY_PATH\\pscp.exe" -pw $env:PASSWORD C:\\path\\to\\your\\file.txt pranav@192.168.1.100:/home/pranav/
-        shell: pwsh
