@@ -7,11 +7,10 @@ jobs:
   test-putty:
     runs-on: self-hosted
     steps:
-      - name: Print PATH (using cmd)
+      - name: Print PATH (using cmd.exe)
         run: |
-          echo %PATH%
-        shell: cmd
-
-      - name: Check PuTTY
-        run: "C:\\Program Files\\PuTTY\\putty.exe"
-        shell: cmd
+          cmd.exe /c "echo %PATH%"
+      
+      - name: Check PuTTY (using cmd.exe)
+        run: |
+          cmd.exe /c "C:\\Program Files\\PuTTY\\putty.exe"
