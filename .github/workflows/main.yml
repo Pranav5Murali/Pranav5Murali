@@ -7,8 +7,9 @@ jobs:
   test-putty:
     runs-on: self-hosted
     steps:
-      - name: Print PATH
-        run: echo %PATH%
+      - name: Print PATH (Windows)
+        run: |
+          echo %PATH%
         shell: cmd
 
       - name: Check PuTTY
