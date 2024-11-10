@@ -1,4 +1,4 @@
-name: Deploy and Execute Script
+name: Deploy and Execute Script using Plink
 
 on:
   push:
@@ -13,19 +13,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up Python environment on the runner
+      # Step 2: Set up Python environment on the runner (Ubuntu VM)
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
-      # Step 3: Install sshpass for automated SSH login
-      - name: Install sshpass
-        run: |
-          sudo apt update
-          sudo apt install -y sshpass
-
-      # Step 4: Set environment variables from secrets
+      # Step 3: Set environment variables from secrets
       - name: Set environment variables
         env:
           USERNAME: pranav
@@ -36,6 +30,12 @@ jobs:
           REMOTE_SCRIPT: /home/pranav/scripts/view_files.py
         run: echo "Environment variables set."
 
-      # Step 5: Run the deployment script
-      - name: Run deploy script
-        run: python3 intro/deploy_script.py
+      # Step 4: Copy the Python script to the remote Ubuntu server using pscp
+      - name: Copy script to remote server using pscp
+        run: |
+          pscp -pw "$PASSWORD" -scp -batch $LOCAL_SCRIPT $USERNAME@$HOST:$TARGET_DIR/
+
+      # Step 5: Execute the Python script on the remote server using plink
+      - name: Execute script on remote server using plink
+        run: |
+          plink -pw "$PASSWORD" -batch $USERNAME@$HOST "/usr/bin/python3 $REMOTE_SCRIPT"
