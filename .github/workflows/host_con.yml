@@ -6,5 +6,9 @@ jobs:
   test-putty:
     runs-on: self-hosted
     steps:
-      - name: Check PuTTY path
+      - name: Print PATH
+        run: echo $env:PATH
+        shell: powershell
+      - name: Check PuTTY
         run: putty
+        shell: powershell
