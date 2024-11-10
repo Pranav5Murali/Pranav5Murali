@@ -33,4 +33,4 @@ jobs:
       # Step 3: Run the Python deployment script using python3
       - name: Execute Deployment Script
         shell: powershell
-        run: python3 intro/deploy_script.py
+        run: python intro/deploy_script.py
