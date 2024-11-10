@@ -17,19 +17,26 @@ jobs:
           HOST: 192.168.1.100 # Replace this with your actual Ubuntu server IP address
           PASSWORD: ${{ secrets.UBUNTU1 }}
         run: |
+          echo "Checking environment variables..."
           echo "USERNAME: $env:USERNAME"
           echo "HOST: $env:HOST"
-          
-          # Check if the PASSWORD is set
+
+          # Check if the PASSWORD is set correctly
           if (-Not $env:PASSWORD) {
-            Write-Error "PASSWORD is not set correctly!"
+            Write-Error "ERROR: PASSWORD is not set correctly!"
             exit 1
           } else {
             echo "PASSWORD is set correctly."
           }
 
-      # Step 2: Check connectivity using plink
-      - name: Check connectivity to Ubuntu server
+      # Step 2: Test SSH connectivity using plink
+      - name: Test SSH connectivity with plink
         shell: pwsh
         run: |
-          & "C:\Program Files\PuTTY\plink.exe" -pw "$env:PASSWORD" -batch "$env:USERNAME@$env:HOST" "echo Connected successfully"
+          echo "Testing connectivity to $env:USERNAME@$env:HOST..."
+          try {
+            & "C:\Program Files\PuTTY\plink.exe" -v -pw "$env:PASSWORD" -batch "$env:USERNAME@$env:HOST" "echo Connected successfully"
+          } catch {
+            Write-Error "ERROR: Failed to connect to $env:HOST"
+            exit 1
+          }
