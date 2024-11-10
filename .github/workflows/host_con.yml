@@ -8,14 +8,10 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Print Environment Variables
-        shell: pwsh
         run: |
-          Write-Host "Python Version: $env:PYTHON_VERSION"
-          Write-Host "Node Version: $env:NODE_VERSION"
-          Write-Host "PowerShell Path: $env:POWERSHELL_PATH"
-          Write-Host "Plink Path: $env:PUTTY_PATH\\plink.exe"
+          "C:\Program Files\PowerShell\7\pwsh.exe" -Command "Write-Host 'Python Version: $env:PYTHON_VERSION'"
+          "C:\Program Files\PowerShell\7\pwsh.exe" -Command "Write-Host 'Node Version: $env:NODE_VERSION'"
+          "C:\Program Files\PowerShell\7\pwsh.exe" -Command "Write-Host 'PowerShell Path: $env:POWERSHELL_PATH'"
+          "C:\Program Files\PowerShell\7\pwsh.exe" -Command "Write-Host 'Plink Path: $env:PUTTY_PATH\\plink.exe'"
           
-          if (-not $env:PASSWORD) {
-            Write-Error "ERROR: PASSWORD is not set!"
-          } else {
-            Write-Host "PASSWORD is set correctly."
+          "C:\Program Files\PowerShell\7\pwsh.exe" -Command "if (-not $env:PASSWORD) { Write-Error 'ERROR: PASSWORD is not set!' } else { Write-Host 'PASSWORD is set correctly.' }"
