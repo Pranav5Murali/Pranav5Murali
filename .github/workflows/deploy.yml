@@ -29,10 +29,10 @@ jobs:
       - name: Copy script to remote server using pscp
         shell: pwsh
         run: |
-          pscp -pw "$PASSWORD" -batch -scp $LOCAL_SCRIPT $USERNAME@$HOST:$TARGET_DIR/
+          pscp -pw "$env:PASSWORD" -batch -scp "$env:LOCAL_SCRIPT" "$env:USERNAME@$env:HOST:$env:TARGET_DIR/"
 
       # Step 4: Execute the script on the remote server using `plink`
       - name: Execute script on remote server using plink
         shell: pwsh
         run: |
-          plink -pw "$PASSWORD" -batch $USERNAME@$HOST "/usr/bin/python3 $REMOTE_SCRIPT"
+          plink -pw "$env:PASSWORD" -batch "$env:USERNAME@$env:HOST" "/usr/bin/python3 $env:REMOTE_SCRIPT"
