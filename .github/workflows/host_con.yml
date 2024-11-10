@@ -7,11 +7,13 @@ jobs:
   check-env:
     runs-on: self-hosted
     steps:
-      - name: Print Environment Variables
+      - name: Check if PowerShell Core exists
         run: |
-          "C:\Program Files\PowerShell\7\pwsh.exe" -Command "Write-Host 'Python Version: $env:PYTHON_VERSION'"
-          "C:\Program Files\PowerShell\7\pwsh.exe" -Command "Write-Host 'Node Version: $env:NODE_VERSION'"
-          "C:\Program Files\PowerShell\7\pwsh.exe" -Command "Write-Host 'PowerShell Path: $env:POWERSHELL_PATH'"
-          "C:\Program Files\PowerShell\7\pwsh.exe" -Command "Write-Host 'Plink Path: $env:PUTTY_PATH\\plink.exe'"
-          
-          "C:\Program Files\PowerShell\7\pwsh.exe" -Command "if (-not $env:PASSWORD) { Write-Error 'ERROR: PASSWORD is not set!' } else { Write-Host 'PASSWORD is set correctly.' }"
+          dir "C:\Program Files\PowerShell\7\pwsh.exe"
+      
+      - name: Print Environment Variables using cmd
+        run: |
+          cmd.exe /c ""C:\Program Files\PowerShell\7\pwsh.exe" -Command "Write-Host 'Python Version: $env:PYTHON_VERSION'""
+          cmd.exe /c ""C:\Program Files\PowerShell\7\pwsh.exe" -Command "Write-Host 'Node Version: $env:NODE_VERSION'""
+          cmd.exe /c ""C:\Program Files\PowerShell\7\pwsh.exe" -Command "Write-Host 'PowerShell Path: $env:POWERSHELL_PATH'""
+          cmd.exe /c ""C:\Program Files\PowerShell\7\pwsh.exe" -Command "Write-Host 'Plink Path: $env:PUTTY_PATH\\plink.exe'""
