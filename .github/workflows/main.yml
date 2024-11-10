@@ -6,17 +6,14 @@ on:
 jobs:
   connect-ubuntu:
     runs-on: self-hosted
-    name: Connect to Ubuntu VM from Windows Runner
+    name: Connect to Ubuntu VM using plink
 
     steps:
-    # Step 1: Checkout the code repository
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    # Step 2: Connect to Ubuntu VM via SSH using plink
     - name: Connect to Ubuntu VM via plink
+      shell: pwsh
       run: |
         echo "Connecting to Ubuntu VM..."
-        "C:\Program Files\PuTTY\plink.exe" -ssh pranav@192.168.1.100 -pw "${{ secrets.UBUNTU1 }}" -m commands.txt
-      env:
-        UBUNTU_PASSWORD: ${{ secrets.UBUNTU1 }}
+        & "C:\Program Files\PuTTY\plink.exe" -ssh pranav@192.168.1.100 -pw "${{ secrets.UBUNTU1 }}" -m commands.txt
