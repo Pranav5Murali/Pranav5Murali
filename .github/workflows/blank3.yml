@@ -1,4 +1,4 @@
-name: Run Python Script on Ubuntu VM
+name: Deploy and Run Python Script on Ubuntu VM
 
 on:
   push:
@@ -7,31 +7,45 @@ on:
   workflow_dispatch:
 
 jobs:
-  ubuntu-ssh:
-    name: Execute Python Script on Ubuntu VM
+  deploy:
+    name: Deploy and Execute Python Script on Ubuntu VM
     runs-on: self-hosted
     environment: ubuntu1
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Set Variables and Execute Script
+      - name: Deploy and Execute Script on Remote Server
         shell: pwsh
         env:
+          USERNAME: "pranav"
+          HOST: "192.168.1.100"
           PASSWORD: ${{ secrets.ubuntu1 }}
+          TARGET_DIR: "/home/pranav/git_target"
+          LOCAL_SCRIPT: "./view_files.py"
+          REMOTE_SCRIPT: "/home/pranav/git_target/view_files.py"
         run: |
-          # Set variables
-          $USERNAME = "pranav"
-          $REMOTE_HOST = "192.168.1.100"
-          $TARGET_DIR = "/home/pranav/git_target"
-          $LOCAL_SCRIPT = "./view_files.py"
-          $REMOTE_SCRIPT = "$TARGET_DIR/view_files.py"
-          
-          # Display debug information (without printing the password)
-          Write-Host "Connecting to $REMOTE_HOST as $USERNAME"
-           
+          # PowerShell Variables
+          $username = $env:USERNAME
+          $host = $env:HOST
+          $password = $env:PASSWORD
+          $targetDir = $env:TARGET_DIR
+          $localScript = $env:LOCAL_SCRIPT
+          $remoteScript = $env:REMOTE_SCRIPT
+
+
           # Step 2: Copy the Python script to the remote server
-          pscp -pw $env:PASSWORD $LOCAL_SCRIPT "$USERNAME@$REMOTE_HOST:$TARGET_DIR/"
-          
+          Write-Host "Step 2: Copying Python script to $host..."
+          pscp -pw $password $localScript "$username@$host:$targetDir/"
+
           # Step 3: Execute the Python script on the remote server
-          echo y | plink -ssh "$USERNAME@$REMOTE_HOST" -pw $env:PASSWORD "python3 $REMOTE_SCRIPT"
+          Write-Host "Step 3: Executing Python script on $host..."
+          $executionResult = plink -ssh "$username@$host" -pw $password "python3 $remoteScript"
+
+          # Check for errors in script execution
+          if ($executionResult -like "*Error*") {
+              Write-Error "Error occurred during script execution on the remote server"
+              exit 1
+          } else {
+              Write-Host "Python script executed successfully."
+          }
