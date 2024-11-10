@@ -8,16 +8,18 @@ on:
 jobs:
   deploy-and-execute:
     runs-on: self-hosted
+
     steps:
       # Step 1: Check out the repository
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up Python environment on the runner (Ubuntu VM)
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
+      # Step 2: Use the system-installed Python on Windows
+      - name: Use system Python
+        shell: pwsh
+        run: |
+          $pythonPath = & where.exe python
+          Write-Host "Using Python at: $pythonPath"
 
       # Step 3: Set environment variables from secrets
       - name: Set environment variables
@@ -30,12 +32,14 @@ jobs:
           REMOTE_SCRIPT: /home/pranav/scripts/view_files.py
         run: echo "Environment variables set."
 
-      # Step 4: Copy the Python script to the remote Ubuntu server using pscp
+      # Step 4: Copy script to remote server using pscp
       - name: Copy script to remote server using pscp
+        shell: pwsh
         run: |
           pscp -pw "$PASSWORD" -scp -batch $LOCAL_SCRIPT $USERNAME@$HOST:$TARGET_DIR/
 
-      # Step 5: Execute the Python script on the remote server using plink
+      # Step 5: Execute script on remote server using plink
       - name: Execute script on remote server using plink
+        shell: pwsh
         run: |
           plink -pw "$PASSWORD" -batch $USERNAME@$HOST "/usr/bin/python3 $REMOTE_SCRIPT"
