@@ -31,5 +31,4 @@ jobs:
 
       # Step 3: Execute the Python deployment script
       - name: Run Deployment Script
-        shell: bash
         run: python deploy_script.py
