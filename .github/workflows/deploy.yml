@@ -14,14 +14,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Use the system-installed Python on Windows
-      - name: Use system Python
-        shell: pwsh
-        run: |
-          $pythonPath = & where.exe python
-          Write-Host "Using Python at: $pythonPath"
-
-      # Step 3: Set environment variables from secrets
+      # Step 2: Set environment variables from secrets
       - name: Set environment variables
         env:
           USERNAME: pranav
@@ -32,14 +25,20 @@ jobs:
           REMOTE_SCRIPT: /home/pranav/scripts/view_files.py
         run: echo "Environment variables set."
 
-      # Step 4: Copy script to remote server using pscp
+      # Step 3: Copy the Python script to the remote Ubuntu server using pscp
       - name: Copy script to remote server using pscp
         shell: pwsh
         run: |
           pscp -pw "$PASSWORD" -scp -batch $LOCAL_SCRIPT $USERNAME@$HOST:$TARGET_DIR/
 
-      # Step 5: Execute script on remote server using plink
+      # Step 4: Execute the Python script on the remote server using plink
       - name: Execute script on remote server using plink
         shell: pwsh
         run: |
           plink -pw "$PASSWORD" -batch $USERNAME@$HOST "/usr/bin/python3 $REMOTE_SCRIPT"
+
+      # Step 5: Run the script locally using the system-installed Python
+      - name: Run Python script locally
+        shell: pwsh
+        run: |
+          C:\Users\Pranav\AppData\Local\Programs\Python\Python38\python.exe intro/deploy_script.py
