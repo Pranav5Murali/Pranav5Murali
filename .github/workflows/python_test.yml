@@ -1,28 +1,41 @@
 name: Run Python Script on Ubuntu VM
 
-on:
+on: 
   workflow_dispatch:
 
 jobs:
   execute-python:
     runs-on: self-hosted
     environment: ubuntu1
-    name: Execute Python Script on Ubuntu VM using plink
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-      
-    # Step to connect to the Ubuntu VM using plink and execute the Python script
+
+    # Step to copy the Python script to the Ubuntu VM
+    - name: Copy Python script to Ubuntu VM
+      shell: powershell
+      env:
+        password: ${{ secrets.UBUNTU1 }}
+      run: |
+        Write-Host "Copying Python script to Ubuntu VM..."
+        
+        # Use pscp (from PuTTY) to copy the file to the Ubuntu VM
+        & "C:\Program Files\PuTTY\pscp.exe" `
+          -pw $Env:password `
+          ./view_files.py `
+          pranav@192.168.1.100:/home/pranav/git_target/view_files.py
+
+    # Step to connect to the Ubuntu VM and run the Python script
     - name: Run Python Script on Ubuntu VM
       shell: powershell
       env:
         password: ${{ secrets.UBUNTU1 }}
       run: |
-        Write-Host "Connecting to Ubuntu VM..."
+        Write-Host "Executing Python script on Ubuntu VM..."
         
-        # Execute the Python script directly using plink
+        # Run the Python script using plink
         & "C:\Program Files\PuTTY\plink.exe" `
           -ssh pranav@192.168.1.100 `
           -pw $Env:password `
-          "cd /home/pranav/Documents && python3 view_files.py"
+          "python3 /home/pranav/git_target/view_files.py"
