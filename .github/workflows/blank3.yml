@@ -1,22 +1,57 @@
-      - name: Execute Script on Remote Server (Python)
+name: Deploy and Run Python Script on Ubuntu VM
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy and Execute Python Script on Ubuntu VM
+    runs-on: self-hosted
+    environment: ubuntu1
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Copy and Execute Script on Remote Server (Python)
         shell: python
         env:
           USERNAME: "pranav"
           HOST: "192.168.1.100"
           PASSWORD: ${{ secrets.ubuntu1 }}
+          TARGET_DIR: "/home/pranav/git_target"
+          LOCAL_SCRIPT: "./view_files.py"
           REMOTE_SCRIPT: "/home/pranav/git_target/view_files.py"
         run: |
           import os
           import subprocess
 
+          # Fetch environment variables
           username = os.getenv("USERNAME")
           host = os.getenv("HOST")
           password = os.getenv("PASSWORD")
+          target_dir = os.getenv("TARGET_DIR")
+          local_script = os.getenv("LOCAL_SCRIPT")
           remote_script = os.getenv("REMOTE_SCRIPT")
 
-          command = f'sshpass -p "{password}" ssh -o StrictHostKeyChecking=no {username}@{host} "python3 {remote_script}"'
-          result = subprocess.run(command, shell=True, capture_output=True, text=True)
-          
+          # Step 1: Create target directory on remote server
+          print(f"Creating target directory on {host}...")
+          create_dir_cmd = f'sshpass -p "{password}" ssh -o StrictHostKeyChecking=no {username}@{host} "mkdir -p {target_dir}"'
+          subprocess.run(create_dir_cmd, shell=True, check=True)
+
+          # Step 2: Copy the Python script to the remote server
+          print(f"Copying Python script to {host}...")
+          copy_cmd = f'sshpass -p "{password}" scp -o StrictHostKeyChecking=no {local_script} {username}@{host}:{target_dir}/'
+          subprocess.run(copy_cmd, shell=True, check=True)
+
+          # Step 3: Execute the Python script on the remote server
+          print(f"Executing Python script on {host}...")
+          exec_cmd = f'sshpass -p "{password}" ssh -o StrictHostKeyChecking=no {username}@{host} "python3 {remote_script}"'
+          result = subprocess.run(exec_cmd, shell=True, capture_output=True, text=True)
+
+          # Step 4: Check the result and handle errors
           if result.returncode != 0:
               print(f"Error: {result.stderr}")
               exit(1)
