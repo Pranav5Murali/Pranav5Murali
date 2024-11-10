@@ -18,8 +18,8 @@ jobs:
       - name: Set environment variables
         env:
           USERNAME: pranav
-          HOST: ${{ secrets.ubuntu_host }}
-          PASSWORD: ${{ secrets.ubuntu1 }}
+          HOST: ${{ secrets.UBUNTU_HOST }}
+          PASSWORD: ${{ secrets.UBUNTU1 }}
           TARGET_DIR: /home/pranav/scripts
           LOCAL_SCRIPT: intro/view_files.py
           REMOTE_SCRIPT: /home/pranav/scripts/view_files.py
