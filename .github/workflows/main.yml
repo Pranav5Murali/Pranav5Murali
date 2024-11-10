@@ -12,17 +12,20 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Debug secret
-      shell: bash
+    # Debugging the secret using cmd
+    - name: Debug secret in cmd
+      shell: cmd
       run: |
-        if [ -z "${{ secrets.UBUNTU1 }}" ]; then
-          echo "Secret UBUNTU1 is not set or is empty"
-        else
-          echo "Secret UBUNTU1 length: ${#UBUNTU1}"
-        fi
+        echo Checking if UBUNTU1 secret is set...
+        if "%UBUNTU1%"=="" (
+          echo Secret UBUNTU1 is not set or is empty
+        ) else (
+          echo Secret UBUNTU1 length: %UBUNTU1:~0,4%...
+        )
 
-    - name: Connect to Ubuntu VM via plink using cmd
+    # Connect to Ubuntu VM using plink
+    - name: Connect to Ubuntu VM via plink
       shell: cmd
       run: |
         echo Connecting to Ubuntu VM...
-        "C:\Program Files\PuTTY\plink.exe" -ssh pranav@192.168.1.100 -pw "${{ secrets.UBUNTU1 }}" -m commands.txt
+        "C:\Program Files\PuTTY\plink.exe" -ssh pranav@192.168.1.100 -pw "%UBUNTU1%" -m commands.txt
