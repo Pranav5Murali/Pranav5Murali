@@ -1,17 +1,26 @@
 name: Set Environment Variables
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
   set-secrets:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Environment Variables
+      - name: Check out the code
+        uses: actions/checkout@v3
+
+      - name: Authenticate GitHub CLI
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "USERNAME=pranav" | gh secret set USERNAME
-          echo "HOST=192.168.1.100" | gh secret set HOST
-          echo "PASSWORD=${{ secrets.ubuntu1 }}" | gh secret set PASSWORD
+          echo "Setting up GitHub Secrets..."
+
+          # Set the USERNAME secret
+          echo "USERNAME=pranav" | gh secret set USERNAME --repos ${{ github.repository }}
+          
+          # Set the HOST secret
+          echo "HOST=192.168.1.100" | gh secret set HOST --repos ${{ github.repository }}
+          
+          # Use the password stored in the GitHub secret 'ubuntu1'
+          echo "PASSWORD=${{ secrets.ubuntu1 }}" | gh secret set PASSWORD --repos ${{ github.repository }}
