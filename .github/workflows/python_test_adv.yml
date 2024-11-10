@@ -12,13 +12,20 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    - name: Print current directory
+      shell: cmd
+      run: |
+        echo "Current directory:"
+        cd
+        echo "Contents of current directory:"
+        dir
+
     - name: Run Python script using cmd
       shell: cmd
       env:
         UBUNTU1: ${{ secrets.UBUNTU1 }}
       run: |
         echo "Running Python script using cmd..."
-        cd "C:\actions-runner\_work\intro\intro"
+        cd "${{ github.workspace }}"
+        dir
         "C:\Users\Pranav\AppData\Local\Programs\Python\Python38\python.exe" execute_remote.py
-
-
