@@ -1,0 +1,15 @@
+name: Test PuTTY
+
+on: 
+  push:
+
+jobs:
+  test-putty:
+    runs-on: self-hosted
+    steps:
+      - name: Print PATH
+        run: echo %PATH%
+        shell: cmd
+      - name: Check PuTTY
+        run: "C:\Program Files\PuTTY\putty.exe"
+        shell: cmd
