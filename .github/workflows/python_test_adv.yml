@@ -1,0 +1,18 @@
+name: Run Python Script on Ubuntu VM
+
+on: 
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    environment: ubuntu1
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Run Python script
+      env:
+        UBUNTU1: ${{ secrets.UBUNTU1 }}
+      run: python3 execute_remote.py
