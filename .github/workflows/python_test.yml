@@ -4,32 +4,39 @@ on:
   workflow_dispatch:
 
 jobs:
-  run-python-script:
+  execute-python:
     runs-on: self-hosted
     environment: ubuntu1
-    name: Execute Python Script on Ubuntu VM
+    name: Execute Python Script on Ubuntu VM using plink
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    # Step to connect to the Ubuntu VM using plink and run the Python script
-    - name: Connect to Ubuntu VM and run Python script
+    # Step to debug the secret (as in Part 1)
+    - name: Debug secret in PowerShell
+      shell: powershell
+      env:
+        UBUNTU1: ${{ secrets.UBUNTU1 }}
+      run: |
+        Write-Host "Checking if UBUNTU1 secret is set..."
+        if ($Env:UBUNTU1 -eq $null -or $Env:UBUNTU1 -eq "") {
+          Write-Host "Secret UBUNTU1 is not set or is empty"
+          exit 1
+        } else {
+          Write-Host "Secret UBUNTU1 is set"
+          Write-Host "Length of password: $($Env:UBUNTU1.Length)"
+      
+    # Step to connect to the Ubuntu VM using plink and execute the Python script
+    - name: Run Python Script on Ubuntu VM
       shell: powershell
       env:
         password: ${{ secrets.UBUNTU1 }}
       run: |
         Write-Host "Connecting to Ubuntu VM..."
-
-        # Create a temporary file with commands to execute on the Ubuntu VM
-        echo "cd /home/pranav/Documents" > commands.txt
-        echo "python3 view_files.py" >> commands.txt
-
-        # Use plink to SSH into the VM and run the commands
-        & "C:\Program Files\PuTTY\plink.exe" -ssh pranav@192.168.1.100 -pw $Env:password -m commands.txt
-
-    - name: Clean up temporary files
-      shell: bash
-      run: |
-        rm -f commands.txt
-
+        
+        # Execute the Python script directly using plink
+        & "C:\Program Files\PuTTY\plink.exe" `
+          -ssh pranav@192.168.1.100 `
+          -pw $Env:password `
+          "cd /home/pranav/Documents && python3 view_files.py"
