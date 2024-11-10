@@ -1,6 +1,6 @@
 import os
 
-path_dir ="/home/pranav/Documents"
+path_dir ="/home/pranav/Documents" #UBUNTU vm path
 
 arr = []
 arr_file = os.listdir(path_dir)
