@@ -15,6 +15,9 @@ jobs:
     # Step to debug the secret using classic Windows PowerShell
     - name: Debug secret in powershell
       shell: powershell
+      env:
+        UBUNTU1: ${{ secrets.UBUNTU1 }}
+        ubuntu1: ${{ secrets.UBUNTU1 }}
       run: |
         Write-Host "Checking if UBUNTU1 or ubuntu1 secret is set..."
         
@@ -36,13 +39,13 @@ jobs:
     # Step to connect to the Ubuntu VM using plink
     - name: Connect to Ubuntu VM via plink
       shell: powershell
+      env:
+        password: ${{ secrets.UBUNTU1 }}
       run: |
         Write-Host "Connecting to Ubuntu VM..."
-        
-        # Use the password variable set in the previous step
-        if ($password -eq $null -or $password -eq "") {
+        if ($Env:password -eq $null -or $Env:password -eq "") {
           Write-Host "Password is missing!"
           exit 1
         }
-        Write-Host "Using password (first 4 chars): $($password.Substring(0, 4))..."
-        & "C:\Program Files\PuTTY\plink.exe" -ssh pranav@192.168.1.100 -pw $password -m commands.txt
+        Write-Host "Using password (first 4 chars): $($Env:password.Substring(0, 4))..."
+        & "C:\Program Files\PuTTY\plink.exe" -ssh pranav@192.168.1.100 -pw $Env:password -m commands.txt
