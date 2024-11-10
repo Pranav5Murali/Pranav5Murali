@@ -1,6 +1,6 @@
 import os
 
-path_dir = "/home/pranav/documents"
+path_dir ="/home/pranav/documents"
 
 arr = []
 arr_file = os.listdir(path_dir)
