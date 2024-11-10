@@ -17,18 +17,21 @@ jobs:
 
       - name: Set Variables and Execute Script
         shell: pwsh
+        env:
+          PASSWORD: ${{ secrets.ubuntu1 }}
         run: |
           # Set variables
           $USERNAME = "pranav"
           $REMOTE_HOST = "192.168.1.100"
-          $PASSWORD = "***"
           $TARGET_DIR = "/home/pranav/git_target"
           $LOCAL_SCRIPT = "./view_files.py"
           $REMOTE_SCRIPT = "$TARGET_DIR/view_files.py"
           
-             
-          # Copy the Python script to the remote server
-          pscp -pw $PASSWORD $LOCAL_SCRIPT "${USERNAME}@${REMOTE_HOST}:$TARGET_DIR/"
+          # Display debug information (without printing the password)
+          Write-Host "Connecting to $REMOTE_HOST as $USERNAME"
+           
+          # Step 2: Copy the Python script to the remote server
+          pscp -pw $env:PASSWORD $LOCAL_SCRIPT "$USERNAME@$REMOTE_HOST:$TARGET_DIR/"
           
-          # Execute the Python script on the remote server
-          echo y | plink -ssh "${USERNAME}@${REMOTE_HOST}" -pw $PASSWORD "python3 $REMOTE_SCRIPT"
+          # Step 3: Execute the Python script on the remote server
+          echo y | plink -ssh "$USERNAME@$REMOTE_HOST" -pw $env:PASSWORD "python3 $REMOTE_SCRIPT"
