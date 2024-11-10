@@ -1,36 +1,41 @@
-name: Deploy and Run Python Script on Remote Ubuntu VM
+name: Deploy and Execute Script
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
-  deploy:
-    runs-on: self-hosted  # Using your Windows self-hosted runner
-
+  deploy-and-execute:
+    runs-on: self-hosted
     steps:
-      # Step 1: Checkout the code from your repository
-      - name: Checkout Code
+      # Step 1: Check out the repository
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up environment variables from GitHub secrets
-      - name: Set up Environment Variables
-        shell: powershell
-        env:
-          USERNAME: ${{ secrets.USERNAME }}
-          HOST: ${{ secrets.HOST }}
-          PASSWORD: ${{ secrets.ubuntu1 }}
-        run: |
-          echo "USERNAME=${USERNAME}" >> $env:GITHUB_ENV
-          echo "HOST=${HOST}" >> $env:GITHUB_ENV
-          echo "PASSWORD=${PASSWORD}" >> $env:GITHUB_ENV
-          echo "TARGET_DIR=/home/pranav/git_target" >> $env:GITHUB_ENV
-          echo "LOCAL_SCRIPT=./intro/view_files.py" >> $env:GITHUB_ENV
-          echo "REMOTE_SCRIPT=/home/pranav/git_target/view_files.py" >> $env:GITHUB_ENV
+      # Step 2: Set up Python environment on the runner
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
 
-      # Step 3: Run the Python deployment script using python3
-      - name: Execute Deployment Script
-        shell: powershell
+      # Step 3: Install sshpass for automated SSH login
+      - name: Install sshpass
+        run: |
+          sudo apt update
+          sudo apt install -y sshpass
+
+      # Step 4: Set environment variables from secrets
+      - name: Set environment variables
+        env:
+          USERNAME: pranav
+          HOST: 192.168.1.100
+          PASSWORD: ${{ secrets.ubuntu1 }}
+          TARGET_DIR: /home/pranav/scripts
+          LOCAL_SCRIPT: intro/view_files.py
+          REMOTE_SCRIPT: /home/pranav/scripts/view_files.py
+        run: echo "Environment variables set."
+
+      # Step 5: Run the deployment script
+      - name: Run deploy script
         run: python3 intro/deploy_script.py
