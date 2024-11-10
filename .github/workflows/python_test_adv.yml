@@ -13,7 +13,9 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Run Python script
-      shell: powershell
+      shell: C:/Program Files/Git/bin/bash.exe
       env:
         UBUNTU1: ${{ secrets.UBUNTU1 }}
-      run: python execute_remote.py
+      run: |
+        echo "Running Python script using Git Bash..."
+        /c/Path/To/Python/python.exe execute_remote.py
