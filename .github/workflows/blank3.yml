@@ -19,19 +19,28 @@
           local_script = os.getenv("LOCAL_SCRIPT")
           remote_script = os.getenv("REMOTE_SCRIPT")
           
-          # Step 1: Create target directory on remote server using python3 explicitly
+          # Step 1: Create target directory on remote server
           print(f"Creating target directory on {host}...")
-          create_dir_cmd = f'sshpass -p "{password}" ssh -o StrictHostKeyChecking=no {username}@{host} "mkdir -p {target_dir}"'
+          create_dir_cmd = (
+              f'sshpass -p "{password}" ssh -o StrictHostKeyChecking=no '
+              f'{username}@{host} "mkdir -p {target_dir}"'
+          )
           subprocess.run(create_dir_cmd, shell=True, check=True)
 
-          # Step 2: Copy the Python script to the remote server using scp
+          # Step 2: Copy the Python script to the remote server
           print(f"Copying Python script to {host}...")
-          copy_cmd = f'sshpass -p "{password}" scp -o StrictHostKeyChecking=no {local_script} {username}@{host}:{target_dir}/'
+          copy_cmd = (
+              f'sshpass -p "{password}" scp -o StrictHostKeyChecking=no '
+              f'{local_script} {username}@{host}:{target_dir}/'
+          )
           subprocess.run(copy_cmd, shell=True, check=True)
 
           # Step 3: Execute the Python script on the remote server using python3
           print(f"Executing Python script on {host} using python3...")
-          exec_cmd = f'sshpass -p "{password}" ssh -o StrictHostKeyChecking=no {username}@{host} "python3 {remote_script}"'
+          exec_cmd = (
+              f'sshpass -p "{password}" ssh -o StrictHostKeyChecking=no '
+              f'{username}@{host} "python3 {remote_script}"'
+          )
           result = subprocess.run(exec_cmd, shell=True, capture_output=True, text=True)
 
           # Step 4: Check the result and handle errors
