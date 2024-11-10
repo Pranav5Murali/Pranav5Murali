@@ -12,10 +12,10 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Run Python script
-      shell: C:/Program Files/Git/bin/bash.exe
+    - name: Run Python script using Git Bash
+      shell: bash
       env:
         UBUNTU1: ${{ secrets.UBUNTU1 }}
       run: |
         echo "Running Python script using Git Bash..."
-        /c/Path/To/Python/python.exe execute_remote.py
+        "/c/Program Files/Python39/python.exe" execute_remote.py
