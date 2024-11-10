@@ -1,1 +1,35 @@
+name: Run Python Script on Ubuntu VM
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-python-script:
+    runs-on: self-hosted
+    environment: ubuntu1
+    name: Execute Python Script on Ubuntu VM
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # Step to connect to the Ubuntu VM using plink and run the Python script
+    - name: Connect to Ubuntu VM and run Python script
+      shell: powershell
+      env:
+        password: ${{ secrets.UBUNTU1 }}
+      run: |
+        Write-Host "Connecting to Ubuntu VM..."
+
+        # Create a temporary file with commands to execute on the Ubuntu VM
+        echo "cd /home/pranav/Documents" > commands.txt
+        echo "python3 view_files.py" >> commands.txt
+
+        # Use plink to SSH into the VM and run the commands
+        & "C:\Program Files\PuTTY\plink.exe" -ssh pranav@192.168.1.100 -pw $Env:password -m commands.txt
+
+    - name: Clean up temporary files
+      shell: bash
+      run: |
+        rm -f commands.txt
 
