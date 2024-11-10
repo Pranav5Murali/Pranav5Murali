@@ -1,19 +1,17 @@
-name: Debug Environment Variables
+name: Test PowerShell Availability
 
 on:
   workflow_dispatch:
 
 jobs:
-  check-env:
+  test-powershell:
     runs-on: self-hosted
     steps:
-      - name: Check if PowerShell Core exists
+      - name: Check if PowerShell Core (pwsh) is available
         run: |
-          dir "C:\Program Files\PowerShell\7\pwsh.exe"
+          echo "Testing PowerShell Core availability..."
+          pwsh -Command "Write-Host 'PowerShell Core is available'"
       
-      - name: Print Environment Variables using PowerShell Core
+      - name: Display PowerShell Version
         run: |
-          "C:\Program Files\PowerShell\7\pwsh.exe" -Command "Write-Host 'Python Path: $env:PYTHON_HOME'"
-          "C:\Program Files\PowerShell\7\pwsh.exe" -Command "Write-Host 'Node Path: $env:NODE_HOME'"
-          "C:\Program Files\PowerShell\7\pwsh.exe" -Command "Write-Host 'PowerShell Path: $env:POWERSHELL_HOME'"
-          "C:\Program Files\PowerShell\7\pwsh.exe" -Command "Write-Host 'Putty Path: $env:PUTTY_HOME\\plink.exe'"
+          pwsh -Command "$PSVersionTable.PSVersion"
