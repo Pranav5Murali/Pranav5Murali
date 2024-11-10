@@ -15,21 +15,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set Variables and Copy Script
+      - name: Set Variables and Execute Script
         shell: pwsh
         run: |
+          # Set variables
           $USERNAME = "pranav"
           $HOST = "192.168.1.100"
           $PASSWORD = "${{ secrets.UBUNTU1 }}"
           $TARGET_DIR = "/home/pranav/git_target"
           $LOCAL_SCRIPT = "./view_files.py"
           $REMOTE_SCRIPT = "$TARGET_DIR/view_files.py"
-
+          
           # Create target directory if it doesn't exist
-          plink -ssh "$USERNAME@$HOST" -pw $PASSWORD "mkdir -p $TARGET_DIR"
-
+          plink -ssh "${USERNAME}@${HOST}" -pw $PASSWORD "mkdir -p $TARGET_DIR"
+          
           # Copy the Python script to the remote server
-          pscp -pw $PASSWORD $LOCAL_SCRIPT "$USERNAME@$HOST:$TARGET_DIR/"
-
+          pscp -pw $PASSWORD $LOCAL_SCRIPT "${USERNAME}@${HOST}:$TARGET_DIR/"
+          
           # Execute the Python script on the remote server
-          echo y | plink -ssh "$USERNAME@$HOST" -pw $PASSWORD "python3 $REMOTE_SCRIPT"
+          echo y | plink -ssh "${USERNAME}@${HOST}" -pw $PASSWORD "python3 $REMOTE_SCRIPT"
