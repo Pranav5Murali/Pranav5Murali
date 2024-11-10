@@ -17,18 +17,28 @@ jobs:
 
       # Step 2: Set up environment variables from GitHub secrets
       - name: Set up Environment Variables
+        shell: powershell
         env:
           USERNAME: ${{ secrets.USERNAME }}
           HOST: ${{ secrets.HOST }}
           PASSWORD: ${{ secrets.ubuntu1 }}
         run: |
-          echo "USERNAME=${USERNAME}" >> $GITHUB_ENV
-          echo "HOST=${HOST}" >> $GITHUB_ENV
-          echo "PASSWORD=${PASSWORD}" >> $GITHUB_ENV
-          echo "TARGET_DIR=/home/pranav/git_target" >> $GITHUB_ENV
-          echo "LOCAL_SCRIPT=./view_files.py" >> $GITHUB_ENV
-          echo "REMOTE_SCRIPT=/home/pranav/git_target/view_files.py" >> $GITHUB_ENV
+          echo "USERNAME=${USERNAME}" >> $env:GITHUB_ENV
+          echo "HOST=${HOST}" >> $env:GITHUB_ENV
+          echo "PASSWORD=${PASSWORD}" >> $env:GITHUB_ENV
+          echo "TARGET_DIR=/home/pranav/git_target" >> $env:GITHUB_ENV
+          echo "LOCAL_SCRIPT=./view_files.py" >> $env:GITHUB_ENV
+          echo "REMOTE_SCRIPT=/home/pranav/git_target/view_files.py" >> $env:GITHUB_ENV
 
-      # Step 3: Execute the Python deployment script
+      # Step 3: Install sshpass on Windows (if necessary)
+      - name: Install sshpass on Windows
+        shell: powershell
+        run: |
+          if (-not (Get-Command sshpass -ErrorAction SilentlyContinue)) {
+            choco install sshpass -y
+          }
+
+      # Step 4: Execute the Python deployment script
       - name: Run Deployment Script
-        run: python3 deploy_script.py
+        shell: powershell
+        run: python deploy_script.py
