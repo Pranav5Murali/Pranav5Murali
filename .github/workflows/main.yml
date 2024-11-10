@@ -6,6 +6,7 @@ on:
 jobs:
   connect-ubuntu:
     runs-on: self-hosted
+    environment: ubuntu1  # Specify the environment here
     name: Connect to Ubuntu VM using plink
 
     steps:
