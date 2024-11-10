@@ -1,54 +1,24 @@
-name: Deploy and Run Python Script on Ubuntu VM
-
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
-
-jobs:
-  deploy:
-    name: Deploy and Execute Python Script on Ubuntu VM
-    runs-on: self-hosted
-    environment: ubuntu1
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Deploy and Execute Script on Remote Server
-        shell: pwsh
+      - name: Execute Script on Remote Server (Python)
+        shell: python
         env:
           USERNAME: "pranav"
           HOST: "192.168.1.100"
-          PASSWORD: "${{ secrets.ubuntu1 }}"
-          TARGET_DIR: "/home/pranav/git_target"
-          LOCAL_SCRIPT: "./view_files.py"
+          PASSWORD: ${{ secrets.ubuntu1 }}
           REMOTE_SCRIPT: "/home/pranav/git_target/view_files.py"
         run: |
-          # PowerShell Variables
-          $username = $env:USERNAME
-          $host = $env:HOST
-          $password = $env:PASSWORD
-          $targetDir = $env:TARGET_DIR
-          $localScript = $env:LOCAL_SCRIPT
-          $remoteScript = $env:REMOTE_SCRIPT
+          import os
+          import subprocess
+
+          username = os.getenv("USERNAME")
+          host = os.getenv("HOST")
+          password = os.getenv("PASSWORD")
+          remote_script = os.getenv("REMOTE_SCRIPT")
+
+          command = f'sshpass -p "{password}" ssh -o StrictHostKeyChecking=no {username}@{host} "python3 {remote_script}"'
+          result = subprocess.run(command, shell=True, capture_output=True, text=True)
           
-          # Step 1: Ensure the target directory exists on the remote server
-          Write-Host "Creating target directory on $host..."
-          plink -ssh "${username}@${host}" -pw $password "mkdir -p $targetDir"
-          
-          # Step 2: Copy the Python script to the remote server
-          Write-Host "Copying Python script to remote server..."
-          pscp -pw $password $localScript "${username}@${host}:$targetDir/"
-          
-          # Step 3: Execute the Python script on the remote server
-          Write-Host "Executing Python script on remote server..."
-          $executionResult = plink -ssh "${username}@${host}" -pw $password "python3 $remoteScript"
-          
-          # Step 4: Check for errors in script execution
-          if ($executionResult -like "*Error*") {
-              Write-Error "Error occurred during script execution on the remote server"
-              exit 1
-          } else {
-              Write-Host "Python script executed successfully."
-          }
+          if result.returncode != 0:
+              print(f"Error: {result.stderr}")
+              exit(1)
+          else:
+              print(f"Success: {result.stdout}")
