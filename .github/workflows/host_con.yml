@@ -1,17 +1,10 @@
-name: Test PowerShell Availability
+name: Test PuTTY
 
-on:
-  workflow_dispatch:
+on: [push]
 
 jobs:
-  test-powershell:
+  test-putty:
     runs-on: self-hosted
     steps:
-      - name: Check if PowerShell Core (pwsh) is available
-        run: |
-          echo "Testing PowerShell Core availability..."
-          pwsh -Command "Write-Host 'PowerShell Core is available'"
-      
-      - name: Display PowerShell Version
-        run: |
-          pwsh -Command "$PSVersionTable.PSVersion"
+      - name: Check PuTTY path
+        run: putty
