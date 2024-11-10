@@ -12,8 +12,8 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Connect to Ubuntu VM via plink
-      shell: pwsh
+    - name: Connect to Ubuntu VM via plink using cmd
+      shell: cmd
       run: |
-        echo "Connecting to Ubuntu VM..."
-        & "C:\Program Files\PuTTY\plink.exe" -ssh pranav@192.168.1.100 -pw "${{ secrets.UBUNTU1 }}" -m commands.txt
+        echo Connecting to Ubuntu VM...
+        "C:\Program Files\PuTTY\plink.exe" -ssh pranav@192.168.1.100 -pw "${{ secrets.UBUNTU1 }}" -m commands.txt
