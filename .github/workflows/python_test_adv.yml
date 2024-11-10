@@ -13,9 +13,8 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Run Python script using Git Bash
-      shell: bash
+      shell: cmd
       env:
         UBUNTU1: ${{ secrets.UBUNTU1 }}
       run: |
-        echo "Running Python script using Git Bash..."
-        "/c/Program Files/Python39/python.exe" execute_remote.py
+        "C:\Program Files\Git\bin\bash.exe" -c 'echo "Running Python script using Git Bash..."; "/c/Program Files/Python39/python.exe" execute_remote.py'
