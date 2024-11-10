@@ -1,3 +1,20 @@
+name: Deploy and Run Python Script on Ubuntu VM
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy and Execute Python Script on Ubuntu VM
+    runs-on: self-hosted
+    environment: ubuntu1
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
       - name: Execute Script on Remote Server (Python)
         shell: python
         env:
@@ -18,7 +35,7 @@
           target_dir = os.getenv("TARGET_DIR")
           local_script = os.getenv("LOCAL_SCRIPT")
           remote_script = os.getenv("REMOTE_SCRIPT")
-          
+
           # Step 1: Create target directory on remote server
           print(f"Creating target directory on {host}...")
           create_dir_cmd = (
