@@ -12,6 +12,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    - name: Debug secret
+      run: echo "Password length: ${#${{ secrets.UBUNTU1 }}}"
+
     - name: Connect to Ubuntu VM via plink using cmd
       shell: cmd
       run: |
