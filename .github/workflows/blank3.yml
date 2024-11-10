@@ -20,17 +20,15 @@ jobs:
         run: |
           # Set variables
           $USERNAME = "pranav"
-          $HOST = "192.168.1.100"
-          $PASSWORD = "${{ secrets.UBUNTU1 }}"
+          $REMOTE_HOST = "192.168.1.100"
+          $PASSWORD = "***"
           $TARGET_DIR = "/home/pranav/git_target"
           $LOCAL_SCRIPT = "./view_files.py"
           $REMOTE_SCRIPT = "$TARGET_DIR/view_files.py"
           
-          # Create target directory if it doesn't exist
-          plink -ssh "${USERNAME}@${HOST}" -pw $PASSWORD "mkdir -p $TARGET_DIR"
-          
+             
           # Copy the Python script to the remote server
-          pscp -pw $PASSWORD $LOCAL_SCRIPT "${USERNAME}@${HOST}:$TARGET_DIR/"
+          pscp -pw $PASSWORD $LOCAL_SCRIPT "${USERNAME}@${REMOTE_HOST}:$TARGET_DIR/"
           
           # Execute the Python script on the remote server
-          echo y | plink -ssh "${USERNAME}@${HOST}" -pw $PASSWORD "python3 $REMOTE_SCRIPT"
+          echo y | plink -ssh "${USERNAME}@${REMOTE_HOST}" -pw $PASSWORD "python3 $REMOTE_SCRIPT"
