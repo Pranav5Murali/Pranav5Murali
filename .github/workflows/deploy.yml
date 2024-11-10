@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted
+    runs-on: self-hosted  # Windows self-hosted runner
 
     steps:
       # Step 1: Checkout the code from your repository
@@ -20,7 +20,7 @@ jobs:
         env:
           USERNAME: ${{ secrets.USERNAME }}
           HOST: ${{ secrets.HOST }}
-          PASSWORD: ${{ secrets.PASSWORD }}
+          PASSWORD: ${{ secrets.ubuntu1 }}
         run: |
           echo "USERNAME=${USERNAME}" >> $GITHUB_ENV
           echo "HOST=${HOST}" >> $GITHUB_ENV
@@ -29,7 +29,7 @@ jobs:
           echo "LOCAL_SCRIPT=./view_files.py" >> $GITHUB_ENV
           echo "REMOTE_SCRIPT=/home/pranav/git_target/view_files.py" >> $GITHUB_ENV
 
-      # Step 3: Execute the Python deploy script
+      # Step 3: Execute the Python deployment script
       - name: Run Deployment Script
         shell: bash
-        run: python3 deploy_script.py
+        run: python deploy_script.py
