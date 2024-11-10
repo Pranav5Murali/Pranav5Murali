@@ -1,4 +1,4 @@
-name: Run Python Script on Ubuntu VM
+name: Run Python Script Beginner
 
 on: 
   workflow_dispatch:
