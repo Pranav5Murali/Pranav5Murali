@@ -7,7 +7,7 @@ jobs:
   test-putty:
     runs-on: self-hosted
     steps:
-      - name: Print PATH (Windows)
+      - name: Print PATH (using cmd)
         run: |
           echo %PATH%
         shell: cmd
