@@ -17,23 +17,16 @@ jobs:
       shell: powershell
       env:
         UBUNTU1: ${{ secrets.UBUNTU1 }}
-        ubuntu1: ${{ secrets.UBUNTU1 }}
       run: |
-        Write-Host "Checking if UBUNTU1 or ubuntu1 secret is set..."
+        Write-Host "Checking if UBUNTU1 secret is set..."
         
-        # Check for both uppercase and lowercase versions of the secret
-        if (($Env:UBUNTU1 -eq $null -or $Env:UBUNTU1 -eq "") -and ($Env:ubuntu1 -eq $null -or $Env:ubuntu1 -eq "")) {
-          Write-Host "Neither UBUNTU1 nor ubuntu1 secrets are set or they are empty"
+        # Check if the UBUNTU1 secret is set and not empty
+        if ($Env:UBUNTU1 -eq $null -or $Env:UBUNTU1 -eq "") {
+          Write-Host "Secret UBUNTU1 is not set or is empty"
           exit 1
         } else {
-          if ($Env:UBUNTU1 -ne $null -and $Env:UBUNTU1 -ne "") {
-            Write-Host "Using UBUNTU1"
-            $password = $Env:UBUNTU1
-          } else {
-            Write-Host "Using ubuntu1"
-            $password = $Env:ubuntu1
-          }
-          Write-Host "Length of password: $($password.Length)"
+          Write-Host "Secret UBUNTU1 is set"
+          Write-Host "Length of password: $($Env:UBUNTU1.Length)"
         }
 
     # Step to connect to the Ubuntu VM using plink
@@ -43,6 +36,8 @@ jobs:
         password: ${{ secrets.UBUNTU1 }}
       run: |
         Write-Host "Connecting to Ubuntu VM..."
+        
+        # Check if the password is available
         if ($Env:password -eq $null -or $Env:password -eq "") {
           Write-Host "Password is missing!"
           exit 1
