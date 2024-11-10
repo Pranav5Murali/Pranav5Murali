@@ -20,12 +20,19 @@ jobs:
           USERNAME: pranav
           HOST: ${{ secrets.UBUNTU_HOST }}
           PASSWORD: ${{ secrets.UBUNTU1 }}
-          TARGET_DIR: /home/pranav/scripts
+          TARGET_DIR: /home/pranav/git_target
           LOCAL_SCRIPT: intro/view_files.py
-          REMOTE_SCRIPT: /home/pranav/scripts/view_files.py
-        run: echo "Environment variables set."
+          REMOTE_SCRIPT: /home/pranav/git_target/view_files.py
+        run: |
+          echo "USERNAME: $env:USERNAME"
+          echo "HOST: $env:HOST"
+          echo "TARGET_DIR: $env:TARGET_DIR"
+          echo "LOCAL_SCRIPT: $env:LOCAL_SCRIPT"
+          echo "REMOTE_SCRIPT: $env:REMOTE_SCRIPT"
+          if (-Not $env:HOST) { Write-Error "HOST is not set" }
+          if (-Not $env:PASSWORD) { Write-Error "PASSWORD is not set" }
 
-      # Step 3: Copy the Python script to the remote Ubuntu server using `pscp`
+      # Step 3: Copy the Python script to the remote server using `pscp`
       - name: Copy script to remote server using pscp
         shell: pwsh
         run: |
