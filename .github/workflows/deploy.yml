@@ -22,6 +22,12 @@ jobs:
           echo "USERNAME=${USERNAME}" >> $GITHUB_ENV
           echo "HOST=${HOST}" >> $GITHUB_ENV
           echo "PASSWORD=${PASSWORD}" >> $GITHUB_ENV
+          echo "TARGET_DIR=/home/pranav/git_target" >> $GITHUB_ENV
+          echo "LOCAL_SCRIPT=./view_files.py" >> $GITHUB_ENV
+          echo "REMOTE_SCRIPT=/home/pranav/git_target/view_files.py" >> $GITHUB_ENV
 
-      - name: Execute Python Script
+      - name: Install sshpass
+        run: sudo apt update && sudo apt install -y sshpass
+
+      - name: Execute Deployment Script
         run: python3 deploy_script.py
