@@ -1,27 +1,35 @@
 #!/bin/bash
 
+# Usage: ./connect.sh <password> <destination_ip> <user>
+
 PASSWORD="$1"
 DEST_IP="$2"
 USER="$3"
 
+# Validate inputs
 if [ -z "$PASSWORD" ] || [ -z "$DEST_IP" ] || [ -z "$USER" ]; then
   echo "Usage: ./connect.sh <password> <destination_ip> <user>"
   exit 1
 fi
 
-echo "Connecting to $DEST_IP as user $USER..."
-
-# Ensure `plink` is installed and available
-if ! command -v plink &> /dev/null; then
-  echo "Error: plink is not installed."
-  exit 1
+# Check if expect is installed
+if ! command -v expect &> /dev/null; then
+  echo "Error: 'expect' is not installed. Installing it..."
+  sudo apt update && sudo apt install -y expect
 fi
 
-plink -ssh -pw "$PASSWORD" "$USER@$DEST_IP" "hostname; whoami; uptime"
+# Use expect to handle SSH connection with the password
+expect <<EOF
+spawn ssh -o StrictHostKeyChecking=no "$USER@$DEST_IP" "hostname; whoami; uptime"
+expect "password:"
+send "$PASSWORD\r"
+expect eof
+EOF
 
+# Check if the connection was successful
 if [ $? -eq 0 ]; then
-  echo "Connection successful!"
+  echo "Connection to $DEST_IP successful!"
 else
-  echo "Connection failed!"
+  echo "Connection to $DEST_IP failed!"
   exit 1
 fi
