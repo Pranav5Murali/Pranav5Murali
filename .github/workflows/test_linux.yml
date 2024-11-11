@@ -11,22 +11,24 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Fetch the secret directly from GitHub secrets
-      - name: Fetch Secret Password
+      # Debugging step to ensure secret is fetched and escaped properly
+      - name: Fetch and export the secret
         id: fetch_secret
         run: |
-          echo "Secret fetched successfully"
+          echo "Secret fetched"
+          echo "VM_PASSWORD=${{ secrets.UBUNTU1 }}" >> $GITHUB_ENV
 
-      # Debugging step to verify if the secret is being fetched correctly
-      - name: Verify Secret Access
+      # Additional debug to check the secret content (temporarily, remove after confirming)
+      - name: Verify Secret Fetch
         run: |
-          echo "VM_PASSWORD=${{ secrets.UBUNTU1 }}"
+          echo "::add-mask::${{ secrets.UBUNTU1 }}"  # Masks the secret in logs
+          echo "Secret length: ${#secrets.UBUNTU1}"
           if [ -z "${{ secrets.UBUNTU1 }}" ]; then
             echo "Error: Secret UBUNTU1 is empty"
             exit 1
           fi
 
-      # Use the fetched secret to connect via SSH
+      # Run the bash script with the escaped password
       - name: Test SSH connection using bash script
         run: |
           chmod +x connect.sh
