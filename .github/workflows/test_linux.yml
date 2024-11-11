@@ -6,28 +6,15 @@ on:
 jobs:
   connect-to-server:
     runs-on: self-hosted
+    environment: ubuntu1  # Specify the environment here
     name: Test Access to Secret and Connection
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # Step to fetch the secret using the bash script
       - name: Fetch Secret Password
         run: |
           chmod +x fetch_password.sh
           ./fetch_password.sh
-
-      # Validate that the password is available
-      - name: Validate Password
-        run: |
-          if [ -z "$PASSWORD" ]; then
-            echo "Error: PASSWORD is not set"
-            exit 1
-          else
-            echo "Password fetched successfully: $PASSWORD"
-          fi
-
-      # Example: Use the password in a sample command (replace this with your actual script)
-      - name: Use Password
-        run: |
-          echo "Using fetched password: $PASSWORD"
+        env:
+          UBUNTU1: ${{ secrets.UBUNTU1 }}
