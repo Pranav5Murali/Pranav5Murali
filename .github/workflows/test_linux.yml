@@ -6,29 +6,28 @@ on:
 jobs:
   connect-to-server:
     runs-on: self-hosted
-    name: Test Connection to Ubuntu Mate
+    name: Test Access to Secret and Connection
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # Step to fetch and validate the secret
+      # Step to fetch the secret using the bash script
       - name: Fetch Secret Password
         run: |
-          echo "Fetching the password from secret..."
-          echo "PASSWORD=${{ secrets.UBUNTU1 }}" >> $GITHUB_ENV
+          chmod +x fetch_password.sh
+          ./fetch_password.sh
 
-      - name: Validate Secret Fetching
+      # Validate that the password is available
+      - name: Validate Password
         run: |
-          if [ -z "${{ env.PASSWORD }}" ]; then
-            echo "Error: Secret password is empty"
+          if [ -z "$PASSWORD" ]; then
+            echo "Error: PASSWORD is not set"
             exit 1
           else
-            echo "Secret password fetched successfully"
+            echo "Password fetched successfully: $PASSWORD"
           fi
 
-      # Run the shell script to connect to the remote machine
-      - name: Run Connection Script
+      # Example: Use the password in a sample command (replace this with your actual script)
+      - name: Use Password
         run: |
-          chmod +x connect.sh
-          ./connect.sh "${{ env.PASSWORD }}" "192.168.1.105" "karthik"
-        shell: bash
+          echo "Using fetched password: $PASSWORD"
