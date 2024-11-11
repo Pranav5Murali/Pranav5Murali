@@ -17,20 +17,13 @@ if [ -z "$SOURCE_USER" ] || [ -z "$SOURCE_IP" ] || [ -z "$SOURCE_PASSWORD" ] || 
   exit 1
 fi
 
-# Check if the source file exists
-echo "Checking if the source file exists..."
-if ! sshpass -p "$SOURCE_PASSWORD" ssh -o StrictHostKeyChecking=no "$SOURCE_USER@$SOURCE_IP" "test -f $SOURCE_SCRIPT_PATH"; then
-  echo "Error: Source file $SOURCE_SCRIPT_PATH does not exist on $SOURCE_USER@$SOURCE_IP"
-  exit 1
-fi
-
-# Ensure the destination directory exists on the destination VM
-echo "Creating destination directory if it doesn't exist..."
+# Ensure the destination directory exists on the remote machine
+echo "Creating destination directory on $DEST_USER@$DEST_IP..."
 sshpass -p "$SOURCE_PASSWORD" ssh -o StrictHostKeyChecking=no "$DEST_USER@$DEST_IP" "mkdir -p /home/karthik/git_target"
 
-# Copy the Python script to the destination VM
-echo "Copying Python script to destination VM..."
-sshpass -p "$SOURCE_PASSWORD" scp -o StrictHostKeyChecking=no "$SOURCE_USER@$SOURCE_IP:$SOURCE_SCRIPT_PATH" "$DEST_USER@$DEST_IP:$DEST_PATH"
+# Copy the Python script to the destination VM using scp
+echo "Copying Python script to $DEST_USER@$DEST_IP..."
+sshpass -p "$SOURCE_PASSWORD" scp -o StrictHostKeyChecking=no "$SOURCE_SCRIPT_PATH" "$DEST_USER@$DEST_IP:$DEST_PATH"
 
 # Check if the copy was successful
 if [ $? -ne 0 ]; then
@@ -38,8 +31,8 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-# Run the Python script on the destination VM
-echo "Executing Python script on destination VM..."
+# Run the Python script on the destination VM using ssh
+echo "Executing Python script on $DEST_USER@$DEST_IP..."
 sshpass -p "$SOURCE_PASSWORD" ssh -o StrictHostKeyChecking=no "$DEST_USER@$DEST_IP" "python3 $DEST_PATH"
 
 if [ $? -eq 0 ]; then
