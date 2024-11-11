@@ -1,4 +1,4 @@
-name: Run Python Script on Remote VM
+name: Run Python Script on Remote Ubuntu VM
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
 jobs:
   execute-python:
     runs-on: self-hosted
-    environment: ubuntu1
+    environment: ubuntu1  # Ensure the correct environment name in lowercase
 
     steps:
     - name: Checkout Repository
@@ -17,4 +17,4 @@ jobs:
         chmod +x copy_and_execute.sh
         ./copy_and_execute.sh \
           "pranav" "192.168.1.100" "${{ secrets.UBUNTU1 }}" \
-          "karthik" "192.168.1.105" "/home/pranav/git_target/view_files.py"
+          "karthik" "192.168.1.105" "/home/karthik/git_target/view_files.py"
