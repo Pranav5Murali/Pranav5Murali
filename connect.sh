@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Usage: ./connect.sh <password> <destination_ip> <user>
-PASSWORD=$1
-DEST_IP=$2
-USER=$3
+PASSWORD="$1"
+DEST_IP="$2"
+USER="$3"
 
 # Check if all arguments are provided
 if [ -z "$PASSWORD" ] || [ -z "$DEST_IP" ] || [ -z "$USER" ]; then
@@ -11,7 +11,6 @@ if [ -z "$PASSWORD" ] || [ -z "$DEST_IP" ] || [ -z "$USER" ]; then
   exit 1
 fi
 
-# Use plink to establish SSH connection and execute a test command
 echo "Attempting to connect to $DEST_IP as user $USER..."
 
 # Check if plink is installed
