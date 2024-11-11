@@ -1,34 +1,34 @@
-name: Test Secret Access and SSH Connection
+name: Test Connection to Remote Server
 
 on:
   workflow_dispatch:
 
 jobs:
-  test-runner:
+  connect-to-server:
     runs-on: self-hosted
-    name: Test Access to Secret and Connection
+    name: Test Connection to Ubuntu Mate
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Debug Secret Fetching
+      # Step to fetch and validate the secret
+      - name: Fetch Secret Password
         run: |
-          echo "Attempting to fetch the secret UBUNTU1"
-          if [ -z "${{ secrets.UBUNTU1 }}" ]; then
-            echo "Error: Secret UBUNTU1 is empty or not accessible"
+          echo "Fetching the password from secret..."
+          echo "PASSWORD=${{ secrets.UBUNTU1 }}" >> $GITHUB_ENV
+
+      - name: Validate Secret Fetching
+        run: |
+          if [ -z "${{ env.PASSWORD }}" ]; then
+            echo "Error: Secret password is empty"
             exit 1
           else
-            echo "Secret UBUNTU1 fetched successfully"
+            echo "Secret password fetched successfully"
           fi
 
-      - name: Print Secret Length (Masked)
-        run: |
-          echo "::add-mask::${{ secrets.UBUNTU1 }}"
-          echo "Secret length: ${#secrets.UBUNTU1}"
-
-      - name: Test SSH Connection Using Bash Script
+      # Run the shell script to connect to the remote machine
+      - name: Run Connection Script
         run: |
           chmod +x connect.sh
-          ./connect.sh "${{ secrets.UBUNTU1 }}" "192.168.1.105" "karthik"
+          ./connect.sh "${{ env.PASSWORD }}" "192.168.1.105" "karthik"
         shell: bash
-
