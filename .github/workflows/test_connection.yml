@@ -1,0 +1,21 @@
+name: Run Python Script on Remote VM
+
+on:
+  workflow_dispatch:
+
+jobs:
+  execute-python:
+    runs-on: self-hosted
+    environment: ubuntu1
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    # Step to fetch secrets and run the Bash script
+    - name: Copy and Execute Python Script
+      run: |
+        chmod +x copy_and_execute.sh
+        ./copy_and_execute.sh \
+          "pranav" "192.168.1.100" "${{ secrets.UBUNTU1 }}" \
+          "karthik" "192.168.1.105" "/home/pranav/git_target/view_files.py"
