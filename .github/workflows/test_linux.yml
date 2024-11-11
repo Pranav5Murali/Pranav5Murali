@@ -11,13 +11,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Fetch secrets
-        env:
-          VM_PASSWORD: ${{ secrets.UBUNTU1 }}
-        run: echo "Password fetched for connection"
+      - name: Fetch and export secrets
+        run: echo "VM_PASSWORD=${{ secrets.Ubuntu1 }}" >> $GITHUB_ENV
 
       - name: Test SSH connection using bash script
         run: |
           chmod +x connect.sh
-          ./connect.sh "$VM_PASSWORD" "192.168.1.105" "karthik"
+          ./connect.sh "${{ env.VM_PASSWORD }}" "192.168.1.105" "karthik"
+        shell: bash
 
