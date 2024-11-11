@@ -1,36 +1,34 @@
-name: Test Connection to Ubuntu Mate
+name: Test Secret Access and SSH Connection
 
 on:
   workflow_dispatch:
 
 jobs:
-  connect:
+  test-runner:
     runs-on: self-hosted
-    name: Connect to Destination VM
+    name: Test Access to Secret and Connection
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # Debugging step to ensure secret is fetched and escaped properly
-      - name: Fetch and export the secret
-        id: fetch_secret
+      - name: Debug Secret Fetching
         run: |
-          echo "Secret fetched"
-          echo "VM_PASSWORD=${{ secrets.UBUNTU1 }}" >> $GITHUB_ENV
-
-      # Additional debug to check the secret content (temporarily, remove after confirming)
-      - name: Verify Secret Fetch
-        run: |
-          echo "::add-mask::${{ secrets.UBUNTU1 }}"  # Masks the secret in logs
-          echo "Secret length: ${#secrets.UBUNTU1}"
+          echo "Attempting to fetch the secret UBUNTU1"
           if [ -z "${{ secrets.UBUNTU1 }}" ]; then
-            echo "Error: Secret UBUNTU1 is empty"
+            echo "Error: Secret UBUNTU1 is empty or not accessible"
             exit 1
+          else
+            echo "Secret UBUNTU1 fetched successfully"
           fi
 
-      # Run the bash script with the escaped password
-      - name: Test SSH connection using bash script
+      - name: Print Secret Length (Masked)
+        run: |
+          echo "::add-mask::${{ secrets.UBUNTU1 }}"
+          echo "Secret length: ${#secrets.UBUNTU1}"
+
+      - name: Test SSH Connection Using Bash Script
         run: |
           chmod +x connect.sh
           ./connect.sh "${{ secrets.UBUNTU1 }}" "192.168.1.105" "karthik"
         shell: bash
+
