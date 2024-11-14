@@ -6,30 +6,32 @@ DEST_IP="$2"
 DEST_PASSWORD="$3"
 SCRIPT_NAME="$4"
 
-# Define the destination path on the remote server
-DEST_PATH="/home/karthik/git_target/$SCRIPT_NAME"
+# Define the destination path on the remote server explicitly
+DEST_PATH="/home/$DEST_USER/git_target"
 
-# Ensure the destination directory exists on the remote machine
-echo "Creating destination directory on $DEST_USER@$DEST_IP..."
-sshpass -p "$DEST_PASSWORD" ssh -o StrictHostKeyChecking=no "$DEST_USER@$DEST_IP" "mkdir -p /home/karthik/git_target"
-
-# Copy the Python script from the GitHub Actions runner to the destination VM
+# Step 1: Copy the Python script to the remote server
 echo "Copying Python script to $DEST_USER@$DEST_IP..."
-sshpass -p "$DEST_PASSWORD" scp -o StrictHostKeyChecking=no "$SCRIPT_NAME" "$DEST_USER@$DEST_IP:$DEST_PATH"
+sshpass -p "$DEST_PASSWORD" scp "./$SCRIPT_NAME" "$DEST_USER@$DEST_IP:$DEST_PATH"
+COPY_STATUS=$?
 
-# Check if the copy was successful
-if [ $? -ne 0 ]; then
-  echo "Error: Failed to copy the file using scp."
-  exit 1
-fi
-
-# Run the Python script on the destination VM using ssh
-echo "Executing Python script on $DEST_USER@$DEST_IP..."
-sshpass -p "$DEST_PASSWORD" ssh -o StrictHostKeyChecking=no "$DEST_USER@$DEST_IP" "python3 $DEST_PATH"
-
-if [ $? -eq 0 ]; then
-  echo "Python script executed successfully!"
+if [ "$COPY_STATUS" == "0" ]; then
+    echo "Python script copied successfully"
 else
-  echo "Error: Failed to execute the Python script."
-  exit 1
+    echo "Error occurred while copying the script"
+    exit 1
 fi
+
+# Step 2: Run the Python script on the remote server
+echo "Running Python script on $DEST_USER@$DEST_IP..."
+sshpass -p "$DEST_PASSWORD" ssh "$DEST_USER@$DEST_IP" "python3 $DEST_PATH/$SCRIPT_NAME"
+EXECUTE_STATUS=$?
+
+if [ "$EXECUTE_STATUS" == "0" ]; then
+    echo "Successfully executed the Python script."
+else
+    echo "Error occurred while executing the script"
+    exit 1
+fi
+
+echo "Operation completed successfully!"
+exit 0
