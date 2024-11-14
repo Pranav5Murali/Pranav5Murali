@@ -13,6 +13,8 @@ else:
 arr = []
 arr_file = os.listdir(path_dir)
 
+print("This is the Beta Branch")
+
 for j in arr_file:
     if j.endswith(".log"):
         arr.append(j)
