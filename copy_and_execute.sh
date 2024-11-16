@@ -6,6 +6,11 @@ DEST_IP="$2"
 DEST_PASSWORD="$3"
 SCRIPT_NAME="$4"
 
+# Debugging: Print the variables
+echo "Destination User: $DEST_USER"
+echo "Destination IP: $DEST_IP"
+echo "Script Name: $SCRIPT_NAME"
+
 # Define the destination path on the remote server explicitly
 DEST_PATH="/home/$DEST_USER/git_target"
 
@@ -20,4 +25,3 @@ else
     echo "Error occurred while copying the script"
     exit 1
 fi
-
