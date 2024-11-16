@@ -15,10 +15,6 @@ jobs:
 
       # Run the Bash script with hardcoded credentials
       - name: Copy and Execute Bash Script
-        env:
-          DEST_USER: "karthik"           # Hardcoded username
-          DEST_IP: "192.168.1.105"       # Hardcoded IP address
-          VMPWD: "Test@123"              # Hardcoded password
         run: |
           chmod +x copy_and_execute.sh
-          ./copy_and_execute.sh "$DEST_USER" "$DEST_IP" "$VMPWD" "test.py"
+          ./copy_and_execute.sh "Test@123" "test.py"
