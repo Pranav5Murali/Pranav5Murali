@@ -21,17 +21,3 @@ else
     exit 1
 fi
 
-# Step 2: Run the Python script on the remote server
-echo "Running Python script on $DEST_USER@$DEST_IP..."
-sshpass -p "$DEST_PASSWORD" ssh "$DEST_USER@$DEST_IP" "python3 $DEST_PATH/$SCRIPT_NAME"
-EXECUTE_STATUS=$?
-
-if [ "$EXECUTE_STATUS" == "0" ]; then
-    echo "Successfully executed the Python script."
-else
-    echo "Error occurred while executing the script"
-    exit 1
-fi
-
-echo "Operation completed successfully!"
-exit 0
