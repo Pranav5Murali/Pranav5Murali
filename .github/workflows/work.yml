@@ -19,4 +19,4 @@ jobs:
           VMPWD: ${{ secrets.VM_PWD }}  # Reference the secret variable
         run: |
           chmod +x copy_and_execute.sh
-          ./copy_and_execute.sh "$VMPWD" "test.py"
+          ./copy_file.sh "$VMPWD" "test.py"
