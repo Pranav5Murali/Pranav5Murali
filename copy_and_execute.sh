@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Usage: ./copy_and_execute.sh <dest_user> <dest_ip> <dest_password> <script_name>
-DEST_USER="$1"
-DEST_IP="$2"
-DEST_PASSWORD="$3"
-SCRIPT_NAME="$4"
+# Hardcoded variables
+DEST_USER="karthik"
+DEST_IP="192.168.1.105"
+DEST_PASSWORD="$1"
+SCRIPT_NAME="$2"
 
 # Define the destination path on the remote server
 DEST_PATH="/home/$DEST_USER/git_target"
