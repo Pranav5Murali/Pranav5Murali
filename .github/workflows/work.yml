@@ -13,10 +13,9 @@ jobs:
         with:
           ref: Beta
 
-      # Run the Bash script using the secret stored in GitHub
       - name: Copy and Execute Bash Script
         env:
-          VMPWD: ${{ secrets.VM_PWD }}  # Reference the secret variable
+          VMPWD: ${{ secrets.VM_PWD }}
         run: |
-          chmod +x copy_and_execute.sh
-          ./copy_file.sh "$VMPWD" "test.py"
+          chmod +x copy_file.sh
+          ./copy_file.sh "karthik" "192.168.1.105" "$VMPWD" "test.py"
