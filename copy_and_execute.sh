@@ -1,37 +1,36 @@
 #!/bin/bash
 
-# Usage: ./copy_and_execute.sh <dest_user> <dest_ip> <dest_password> <script_name>
-DEST_USER="$1"
-DEST_IP="$2"
-DEST_PASSWORD="$3"
-SCRIPT_NAME="$4"
+# Hardcoded variables
+DEST_USER="karthik"
+DEST_IP="192.168.1.105"
+DEST_PASSWORD="$1"
+SCRIPT_NAME="$2"
 
-# Define the destination path on the remote server explicitly
+# Check if the required arguments are provided
+if [ -z "$DEST_PASSWORD" ] || [ -z "$SCRIPT_NAME" ]; then
+    echo "Usage: ./copy_and_execute.sh <password> <script_name>"
+    exit 1
+fi
+
+# Check if sshpass is installed
+if ! command -v sshpass &> /dev/null; then
+    echo "Error: sshpass is not installed. Please install it and try again."
+    exit 1
+fi
+
+# Define the destination path on the remote server
 DEST_PATH="/home/$DEST_USER/git_target"
 
-# Step 1: Copy the Python script to the remote server
 echo "Copying Python script to $DEST_USER@$DEST_IP..."
-sshpass -p "$DEST_PASSWORD" scp "./$SCRIPT_NAME" "$DEST_USER@$DEST_IP:$DEST_PATH"
+
+# Copy the Python script to the remote server using sshpass and scp
+sshpass -p "$DEST_PASSWORD" scp -o StrictHostKeyChecking=no "./$SCRIPT_NAME" "$DEST_USER@$DEST_IP:$DEST_PATH"
 COPY_STATUS=$?
 
-if [ "$COPY_STATUS" == "0" ]; then
+# Check if the script was copied successfully
+if [ "$COPY_STATUS" -eq 0 ]; then
     echo "Python script copied successfully"
 else
     echo "Error occurred while copying the script"
     exit 1
 fi
-
-# Step 2: Run the Python script on the remote server
-echo "Running Python script on $DEST_USER@$DEST_IP..."
-sshpass -p "$DEST_PASSWORD" ssh "$DEST_USER@$DEST_IP" "python3 $DEST_PATH/$SCRIPT_NAME"
-EXECUTE_STATUS=$?
-
-if [ "$EXECUTE_STATUS" == "0" ]; then
-    echo "Successfully executed the Python script."
-else
-    echo "Error occurred while executing the script"
-    exit 1
-fi
-
-echo "Operation completed successfully!"
-exit 0
