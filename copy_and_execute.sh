@@ -6,17 +6,11 @@ DEST_IP="$2"
 DEST_PASSWORD="$3"
 SCRIPT_NAME="$4"
 
-# Debugging: Print the variables
-echo "Destination User: $DEST_USER"
-echo "Destination IP: $DEST_IP"
-echo "Script Name: $SCRIPT_NAME"
-
-# Define the destination path on the remote server explicitly
+# Define the destination path on the remote server
 DEST_PATH="/home/$DEST_USER/git_target"
 
-# Step 1: Copy the Python script to the remote server
-echo "Copying Python script to $DEST_USER@$DEST_IP..."
-sshpass -p "$DEST_PASSWORD" scp "./$SCRIPT_NAME" "$DEST_USER@$DEST_IP:$DEST_PATH"
+# Copy the Python script to the remote server
+sshpass -p "$DEST_PASSWORD" scp -o StrictHostKeyChecking=no "./$SCRIPT_NAME" "$DEST_USER@$DEST_IP:$DEST_PATH"
 COPY_STATUS=$?
 
 if [ "$COPY_STATUS" == "0" ]; then
