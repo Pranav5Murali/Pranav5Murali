@@ -1,35 +1,24 @@
 name: Copy and Execute Script on Remote Server
 
 on:
-  workflow_dispatch:
-    branches:
-      - Beta
+  workflow_dispatch: # This allows the workflow to be manually triggered
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout the Beta branch
         uses: actions/checkout@v3
+        with:
+          ref: Beta
 
-      # Debugging step: Check if environment variables are set correctly
-      - name: Debug environment variables
+      # Run the Bash script using both secrets and variables
+      - name: Copy and Execute Bash Script from Beta Branch
         env:
-          DEST_USER: ${{ secrets.DEST_USER }}
-          DEST_IP: ${{ secrets.DEST_IP }}
-          VM_PWD: ${{ secrets.VM_PWD }}
-        run: |
-          echo "DEST_USER: $DEST_USER"
-          echo "DEST_IP: $DEST_IP"
-          echo "VM_PWD: *** (hidden for security)"
-
-      # Copy and execute the Bash script
-      - name: Copy Python Script to Remote Server and Execute
-        env:
-          DEST_USER: ${{ secrets.DEST_USER }}
-          DEST_IP: ${{ secrets.DEST_IP }}
-          VM_PWD: ${{ secrets.VM_PWD }}
+          DEST_USER: ${{ vars.DEST_USER }}    # Access variables
+          DEST_IP: ${{ vars.DEST_IP }}        # Access variables
+          VM_PWD: ${{ secrets.VM_PWD }}       # Access secret
         run: |
           chmod +x copy_and_execute.sh
           ./copy_and_execute.sh "$DEST_USER" "$DEST_IP" "$VM_PWD" "test.py"
