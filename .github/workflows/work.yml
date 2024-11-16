@@ -5,7 +5,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu
+    runs-on: [self-hosted, X64, Linux]
 
     steps:
       - name: Checkout the Beta branch
@@ -13,12 +13,12 @@ jobs:
         with:
           ref: Beta
 
-      # Run the Bash script from the Beta branch to copy and execute the Python script on the remote server
+      # Run the Bash script using both secrets and variables
       - name: Copy and Execute Bash Script from Beta Branch
         env:
-          DEST_USER: ${{ vars.DEST_USER }}
-          DEST_IP: ${{ vars.DEST_IP }}
-          VM_PWD: ${{ vars.VM_PWD }}
+          DEST_USER: ${{ vars.DEST_USER }}    # Access variables
+          DEST_IP: ${{ vars.DEST_IP }}        # Access variables
+          VM_PWD: ${{ secrets.VM_PWD }}       # Access secret
         run: |
           chmod +x copy_and_execute.sh
           ./copy_and_execute.sh "$DEST_USER" "$DEST_IP" "$VM_PWD" "test.py"
