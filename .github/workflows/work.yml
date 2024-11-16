@@ -13,25 +13,12 @@ jobs:
         with:
           ref: Beta
 
-      # Verify that the VMPWD secret is accessible
-      - name: Verify VMPWD Secret
-        env:
-          VMPWD: ${{ secrets.VMPWD }}
-        run: |
-          echo "Checking if VMPWD is set..."
-          if [ -z "$VMPWD" ]; then
-            echo "Error: VMPWD is not set"
-            exit 1
-          else
-            echo "VMPWD is set correctly"
-          fi
-
-      # Run the Bash script if the secret is accessible
+      # Run the Bash script with hardcoded credentials
       - name: Copy and Execute Bash Script
         env:
-          DEST_USER: "karthik"          # Hardcoded username
-          DEST_IP: "192.168.1.105"      # Hardcoded IP address
-          VMPWD: ${{ secrets.VMPWD }}   # Access the secret
+          DEST_USER: "karthik"           # Hardcoded username
+          DEST_IP: "192.168.1.105"       # Hardcoded IP address
+          VMPWD: "Test@123"              # Hardcoded password
         run: |
           chmod +x copy_and_execute.sh
           ./copy_and_execute.sh "$DEST_USER" "$DEST_IP" "$VMPWD" "test.py"
