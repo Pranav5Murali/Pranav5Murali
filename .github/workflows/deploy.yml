@@ -1,7 +1,6 @@
 name: Copy and Execute Script on Remote Server
 
 on:
-  # Trigger the workflow only on the 'Beta' branch when manually dispatched
   workflow_dispatch:
     branches:
       - Beta
@@ -13,6 +12,17 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      # Debugging step: Check if environment variables are set correctly
+      - name: Debug environment variables
+        env:
+          DEST_USER: ${{ secrets.DEST_USER }}
+          DEST_IP: ${{ secrets.DEST_IP }}
+          VM_PWD: ${{ secrets.VM_PWD }}
+        run: |
+          echo "DEST_USER: $DEST_USER"
+          echo "DEST_IP: $DEST_IP"
+          echo "VM_PWD: *** (hidden for security)"
 
       # Copy and execute the Bash script
       - name: Copy Python Script to Remote Server and Execute
