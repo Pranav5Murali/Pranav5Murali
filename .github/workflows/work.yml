@@ -1,11 +1,10 @@
 name: Copy and Execute Script on Remote Server
 
 on:
-  workflow_dispatch: # Allows manual triggering
+  workflow_dispatch:
 
 jobs:
   deploy:
-    # Use your self-hosted runner
     runs-on: [self-hosted, X64, Linux]
 
     steps:
@@ -14,12 +13,24 @@ jobs:
         with:
           ref: Beta
 
-      # Run the Bash script using the updated secret for VM_PWD
+      # Check if the secret VMPWD is correctly picked up
+      - name: Verify VMPWD Secret
+        env:
+          VMPWD: ${{ secrets.VMPWD }}
+        run: |
+          if [ -z "$VMPWD" ]; then
+            echo "Error: VMPWD is not set"
+            exit 1
+          else
+            echo "VMPWD is set"
+          fi
+
+      # Run the Bash script using the updated secret
       - name: Copy and Execute Bash Script
         env:
-          DEST_USER: "karthik"        # Hardcoded username
-          DEST_IP: "192.168.1.105"    # Hardcoded IP address
-          VM_PWD: ${{ secrets.VM_PWD }} # Accessing the corrected secret
+          DEST_USER: "karthik"           # Hardcoded username
+          DEST_IP: "192.168.1.105"       # Hardcoded IP address
+          VMPWD: ${{ secrets.VMPWD }}    # Accessing the corrected secret
         run: |
           chmod +x copy_and_execute.sh
-          ./copy_and_execute.sh "$DEST_USER" "$DEST_IP" "$VM_PWD" "test.py"
+          ./copy_and_execute.sh "$DEST_USER" "$DEST_IP" "$VMPWD" "test.py"
